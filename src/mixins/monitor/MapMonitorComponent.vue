@@ -123,6 +123,7 @@
               :key="item.uuid"
               shadow="always"
               class="item-card"
+              @click.native="handleClickDevice(item)"
             >
               <el-descriptions :title="`${item.name}(${item.code})`">
                 <el-descriptions-item label="信号强度">{{
@@ -302,6 +303,18 @@ export default {
         dom.innerHeight || Math.min(dom.clientHeight, dom.clientHeight);
       if (clientHeight + scrollTop >= scrollHeight) {
         this.searchMore();
+      }
+    },
+    handleClickDevice(item) {
+      const map = this.getMap();
+      const { lon, lat } = item;
+      if ( lon && lat ) {
+        var point = new BMapGL.Point(Number(lon), Number(lat));
+        map.centerAndZoom(point, 20);
+      } else {
+        this.$store.dispatch("toast/showToast", {
+          message: "当前设备暂时无法定位！",
+        });
       }
     },
     onSearch: async function () {
