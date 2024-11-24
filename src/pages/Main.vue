@@ -1,6 +1,7 @@
 <template>
   <div class="homeContainer">
 
+    <!-- 全局地图组件 -->
     <global-map
         :blurMap="blurMap"
         :navExpand="navExpand"

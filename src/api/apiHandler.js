@@ -10,6 +10,11 @@ export const getDeviceList = (params) => {
     return post('/user/JikongSave/getDeviceList', {...params})
 }
 
+// 获取设备列表 - 井下设备（新）
+export const getDeviceJXList = (params) => {
+    return post('/q/corp-device-jxs/browse-page', {...params})
+}
+
 // 获取开路设备列表
 export const getOpenDeviceList = (params) => {
     return post('/user/Jikong/getKaiLuDeviceList', {...params})

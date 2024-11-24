@@ -1,39 +1,46 @@
 <template>
-  <div class="map-container"
-       id="map-container"
-       v-bind:class="{fullscreen: isFullScreen}"
-       @fullscreenchange="fullScreenChange"
+  <div
+    class="map-container"
+    id="map-container"
+    v-bind:class="{ fullscreen: isFullScreen }"
+    @fullscreenchange="fullScreenChange"
   >
-    <div class="map" id="map" v-bind:class="{blurMap: blurMap}"></div>
-    <img v-if="isFullScreen" class="fullscreen-logo" src="../../assets/img/fullscreen_logo.png"/>
-    <map-control v-bind:class="{blurMap: blurMap, avoidNav: navExpand}"/>
+    <div class="map" id="map" v-bind:class="{ blurMap: blurMap }"></div>
+    <img
+      v-if="isFullScreen"
+      class="fullscreen-logo"
+      src="../../assets/img/fullscreen_logo.png"
+    />
+    <map-control v-bind:class="{ blurMap: blurMap, avoidNav: navExpand }" />
 
     <map-component
-        v-if="username && useOldMap"
-        v-bind:class="{blurMap: blurMap, avoidNav: navExpand}"
-        :avoid-nav="navExpand"
-        :isFullScreen="isFullScreen"
+      v-if="username && useOldMap"
+      :class="{ blurMap: blurMap, avoidNav: navExpand }"
+      :avoid-nav="navExpand"
+      :isFullScreen="isFullScreen"
     />
 
-    <map-monitor-component v-if="username && filterType[0] === PageTypeEnum.MONITOR"
-                           v-bind:class="{blurMap: blurMap, avoidNav: navExpand}"
-                           :avoid-nav="navExpand"
-                           :isFullScreen="isFullScreen"
+    <map-monitor-component
+      v-if="username && filterType[0] === PageTypeEnum.MONITOR"
+      :class="{ blurMap: blurMap, avoidNav: navExpand }"
+      :avoid-nav="navExpand"
+      :isFullScreen="isFullScreen"
     ></map-monitor-component>
 
-    <map-new-component v-else-if="username && !(useOldMap)"
-                       v-bind:class="{blurMap: blurMap, avoidNav: navExpand}"
-                       :avoid-nav="navExpand"
-                       :isFullScreen="isFullScreen"
+    <map-new-component
+      v-else-if="username && !useOldMap"
+      :class="{ blurMap: blurMap, avoidNav: navExpand }"
+      :avoid-nav="navExpand"
+      :isFullScreen="isFullScreen"
     ></map-new-component>
 
     <template v-if="isFullScreen">
-      <MileageAlert/>
-      <MileageFault/>
-      <DownholeAlert/>
-      <DownholeFault/>
-      <InvehicleAlert/>
-      <InvehicleFault/>
+      <MileageAlert />
+      <MileageFault />
+      <DownholeAlert />
+      <DownholeFault />
+      <InvehicleAlert />
+      <InvehicleFault />
     </template>
   </div>
 </template>
@@ -74,38 +81,43 @@ export default {
       return this.$store.state.device.filterType;
     },
     useOldMap() {
-      return this.filterType[0] === 'downhole' || this.filterType[0] === PageTypeEnum.MILEAGE;
+      return (
+        this.filterType[0] === "downhole" ||
+        this.filterType[0] === PageTypeEnum.MILEAGE
+      );
     },
   },
-  beforeDestroy() {
-  },
+  beforeDestroy() {},
   mounted: function () {
     this.initMap();
   },
   mixins: [],
   methods: {
     turnToDeviceList(e) {
-      console.log('e', e)
-      if ((Object.keys(window.globalCustomData).length === 0)) {
-        this.toast('请选择一个设备');
+      console.log("e", e);
+      if (Object.keys(window.globalCustomData).length === 0) {
+        this.toast("请选择一个设备");
         return;
       }
-      if (!this.$route.path.includes('downhole')) {
-        this.toast('目前只支持井下设备跳转详情');
+      if (!this.$route.path.includes("downhole")) {
+        this.toast("目前只支持井下设备跳转详情");
         return;
       }
       let sortRes = [];
       Object.keys(window.globalCustomData).forEach((key) => {
         sortRes.push(window.globalCustomData[key]);
-      })
-      sortRes = sortRes.sort((before, after) => before.timeStamp > after.timeStamp);
+      });
+      sortRes = sortRes.sort(
+        (before, after) => before.timeStamp > after.timeStamp
+      );
       this.$router.push({
-        path: '/downhole/device',
+        path: "/downhole/device",
         query: {
           deviceName: sortRes.slice(-1)[0].deviceName,
         },
       });
     },
+    // 初始化地图
     initMap: function () {
       let map = new BMapGL.Map("map");
       // var menu = new BMapGL.ContextMenu();
@@ -115,24 +127,38 @@ export default {
       //   menu.addItem(new BMapGL.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback, 0));
       // }
       // map.addContextMenu(menu);
-      map.addEventListener('rightclick', () => {
-        if (this.$router.currentRoute.path.includes('monitor')) {
-          this.$store.dispatch('toast/showToast', {message: '监控中心不支持右键跳转'})
+      map.addEventListener("rightclick", () => {
+        if (this.$router.currentRoute.path.includes("monitor")) {
+          this.$store.dispatch("toast/showToast", {
+            message: "监控中心不支持右键跳转",
+          });
         }
       });
       // FIXME: 旧的要想好怎么适配
-      Promise.all([this.$store.dispatch('updateDeviceStatus'), this.$store.dispatch('updateNewDeviceStatus'), this.$store.dispatch('updateMileageDeviceStatus')]).then(() => {
-        let deviceList = [...this.$store.state.device.devices, ...this.$store.state.device.mileageDevices, ...this.$store.state.device.newDevices];
-        if (this.filterType[0] !== PageTypeEnum.MONITOR) {
-          deviceList = deviceList.filter((item) =>  this.filterType.indexOf(item.deviceType) > -1);
-        }
-        this.$bus.$emit('initMapLocation', {
-          longitude: deviceList[0]?.position?.[0],
-          latitude: deviceList[0]?.position?.[1],
+      Promise.all([
+        this.$store.dispatch("updateDeviceStatus"),
+        this.$store.dispatch("updateNewDeviceStatus"),
+        this.$store.dispatch("updateMileageDeviceStatus"),
+      ])
+        .then(() => {
+          let deviceList = [
+            ...this.$store.state.device.devices,
+            ...this.$store.state.device.mileageDevices,
+            ...this.$store.state.device.newDevices,
+          ];
+          if (this.filterType[0] !== PageTypeEnum.MONITOR) {
+            deviceList = deviceList.filter(
+              (item) => this.filterType.indexOf(item.deviceType) > -1
+            );
+          }
+          this.$bus.$emit("initMapLocation", {
+            longitude: deviceList[0]?.position?.[0],
+            latitude: deviceList[0]?.position?.[1],
+          });
+        })
+        .catch((error) => {
+          console.log("an error occurred", error);
         });
-      }).catch((error) => {
-        console.log('an error occurred', error);
-      });
       // var point = new BMapGL.Point(114.064338, 22.535676);
       // map.centerAndZoom(point, 12);
       // setTimeout(() => {
@@ -144,14 +170,13 @@ export default {
       this.setMap(map);
     },
     fullScreenChange: function () {
-      this.$store.dispatch('updateFullScreenStatus');
-    }
-  }
-}
+      this.$store.dispatch("updateFullScreenStatus");
+    },
+  },
+};
 </script>
 
 <style scoped lang="less">
-
 @import "../../styles/common";
 
 .map-container {
@@ -180,7 +205,6 @@ export default {
   }
 
   .notification-container {
-
   }
 
   .summary-wrap {
@@ -196,7 +220,6 @@ export default {
       padding-left: @navWidth + @padding;
     }
   }
-
 }
 
 #map {
@@ -206,5 +229,4 @@ export default {
   left: 0;
   position: absolute;
 }
-
 </style>

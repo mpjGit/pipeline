@@ -14,7 +14,7 @@ import '@/styles/ele-ui-overwrite.css';
 
 import {
     Popover, Button, DatePicker, TimePicker, Tabs, TabPane, Autocomplete, Tooltip, Switch, select, Option,
-    OptionGroup
+    OptionGroup, Form, FormItem, Input, Descriptions, DescriptionsItem, Card
 } from 'element-ui';
 import {cloneDeep} from "lodash-es";
 import EventBus from "@/utils/eventBus";
@@ -23,6 +23,7 @@ import EventBus from "@/utils/eventBus";
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
+// 组件注册
 Vue.component('v-image', ImageWrap)
 Vue.component('v-checkbox', VectorCheckbox)
 Vue.component('v-switch', VectorSwitch)
@@ -36,6 +37,12 @@ Vue.component(Autocomplete.name, Autocomplete);
 Vue.component(TabPane.name, TabPane);
 Vue.component(Tooltip.name, Tooltip);
 Vue.component(Tooltip.name, Tooltip);
+Vue.component(Form.name, Form);
+Vue.component(FormItem.name, FormItem);
+Vue.component(Input.name, Input);
+Vue.component(Descriptions.name, Descriptions);
+Vue.component(DescriptionsItem.name, DescriptionsItem);
+Vue.component(Card.name, Card);
 Vue.use(select);
 Vue.use(Option);
 Vue.use(OptionGroup);
@@ -70,6 +77,7 @@ Vue.mixin({
         sleep(ms) { //sleep延迟方法
             const unixtime_ms = new Date().getTime();
             while (new Date().getTime() < unixtime_ms + ms) {
+                console.log(1)
             }
         },
         play(url) {
