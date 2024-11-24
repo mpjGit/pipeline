@@ -1,0 +1,110 @@
+[
+        {
+          "name_zh": "策划案",
+          "name_en": "The planning case",
+          "background_color": "rgb(174,174,161)",
+          "videos": [
+            {
+              "name_zh": "成都出差注意手册2.0",
+              "src": "https://sz-video.topys.cn/6f49cb86c475418e91ca7d9486865651/81af7151576d40b3bfd900aea818ace5-6e59ea592f72fd4179cc21befd3afd24-hd-nbv1.mp4",
+              "cover": "https://img-sz.topys.cn/2022-03-01/1646104653874.png?x-oss-process=image/resize,m_fill,h_312,w_555,limit_0/format,png"
+            },
+            {
+              "name_zh": "如果有一天，你的一句评论变成广告创意",
+              "src": "https://sz-video.topys.cn/e5ac88cc03b7494bbd1f5498cf98e515/c773e171e4f54aec830675c7dd187022-4f5a9205278cb4f183e520ff34d514bd-hd-nbv1.mp4",
+              "cover": "https://img-sz.topys.cn/2022-03-09/1646811472234.png?x-oss-process=image/resize,m_fill,h_658,w_1170,limit_0/format,png"
+            },
+            {
+              "name_zh": "下班后喝一杯",
+              "src": "https://sz-video.topys.cn/8b17f9a4e1ca4890bbf317fd5898dbf7/6d8652365c1047abbf749af5e15a60a7-20f67648efb241d96b9356cbb6faf7e1-hd-nbv1.mp4",
+              "cover": "https://img-sz.topys.cn/2022-02-09/1644390141985.png?x-oss-process=image/resize,m_fill,h_312,w_555,limit_0/format,png"
+            },
+            {
+              "name_zh": "论热血，还得看奥运会",
+              "src": "https://sz-video.topys.cn/5de00c8ed4f64e96893583b5e9346787/0365dc9e785548dc8f460f875244668e-30e920345c6458661b146a83046b1e81-hd-nbv1.mp4",
+              "cover": "https://img-sz.topys.cn/2022-02-09/1644392655641.png?x-oss-process=image/resize,m_fill,h_312,w_555,limit_0/format,png"
+            }
+          ]
+        },
+        {
+          "name_zh": "策划案",
+          "name_en": "The planning case",
+          "background_color": "rgb(164,122,84)",
+          "videos": [
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            }
+          ]
+        },
+        {
+          "name_zh": "策划案",
+          "name_en": "The planning case",
+          "background_color": "rgb(113,126,121)",
+          "videos": [
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            }
+          ]
+        },
+        {
+          "name_zh": "策划案",
+          "name_en": "The planning case",
+          "background_color": "rgb(126,111,92)",
+          "videos": [
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            },
+            {
+              "name_zh": "影片名称",
+              "src": "https://",
+              "cover": "https://"
+            }
+          ]
+        }
+      ]

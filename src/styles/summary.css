@@ -1,0 +1,10 @@
+.summary-wrap {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  z-index: 0;
+}
+.summary-wrap > div {
+  margin-right: 0.2rem;
+}
+/*# sourceMappingURL=summary.css.map */
