@@ -586,10 +586,14 @@ export default {
   z-index: 99999999 !important;
 }
 
+.search-container-auto-acc {
+  top: 2rem;
+}
+
 .search-list {
   z-index: 9;
   width: 5rem;
-  height: 8rem;
+  height: 45vh;
   color: white;
   background: #222a3644;
   border-radius: 0.16rem 0.16rem 0.16rem 0.16rem;
@@ -625,7 +629,7 @@ export default {
 
   .lists {
     margin-top: 10px;
-    height: 6.8rem;
+    height: 30vh;
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: 10px;
