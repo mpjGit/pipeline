@@ -15,6 +15,11 @@ export const getDeviceJXList = (params) => {
     return post('/q/corp-device-jxs/browse-page', {...params})
 }
 
+// 获取右侧报警列表 (新)
+export const getDevAlarmList = (params) => {
+    return get(`/q/all-device-infos/get-alarm-list/${params.enterpriseUuid}/${params.distinguish}`)
+}
+
 // 获取开路设备列表
 export const getOpenDeviceList = (params) => {
     return post('/user/Jikong/getKaiLuDeviceList', {...params})

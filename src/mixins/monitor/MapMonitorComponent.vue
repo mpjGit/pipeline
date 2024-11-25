@@ -178,6 +178,83 @@
         />
       </div>
     </div>
+
+    <!-- 告警列表的查询 -->
+    <div class="alarm-list">
+      <!-- 列表区域 -->
+      <el-tabs
+        v-model="activeTab"
+        type="border-card"
+        class="lists"
+        @tab-click="setActiveTab"
+      >
+        <el-tab-pane
+          v-for="item in tabData"
+          :key="item.distinguish"
+          :label="deviceType_toStr(item.distinguish)"
+          :name="item.distinguish"
+        >
+          <div class="ls-content">
+            <el-card
+              v-for="item in searchList"
+              :key="item.uuid"
+              shadow="always"
+              class="item-card"
+              @click.native="handleClickDevice(item)"
+            >
+              <el-descriptions :title="`${item.name}(${item.code})`">
+                <el-descriptions-item label="信号强度">{{
+                  item.signalStrength
+                }}</el-descriptions-item>
+                <el-descriptions-item label="电池电压值">{{
+                  item.battery
+                }}</el-descriptions-item>
+                <el-descriptions-item label="浓度">{{
+                  item.density
+                }}</el-descriptions-item>
+                <el-descriptions-item label="温度">{{
+                  item.temperature
+                }}</el-descriptions-item>
+                <el-descriptions-item label="液位状态">{{
+                  item.liquidLevel === 0 ? "正常" : "超限"
+                }}</el-descriptions-item>
+                <el-descriptions-item label="门禁状态">{{
+                  item.entranceGuard === 0 ? "正常" : "异常"
+                }}</el-descriptions-item>
+                <el-descriptions-item label="进气压力">{{
+                  item.intakeMpa
+                }}</el-descriptions-item>
+                <el-descriptions-item label="出气压力">{{
+                  item.ventMpa
+                }}</el-descriptions-item>
+                <el-descriptions-item label="预留">江苏</el-descriptions-item>
+                <el-descriptions-item label="预留">江苏</el-descriptions-item>
+                <el-descriptions-item label="当前时间">{{
+                  item.uploadTime
+                }}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </div>
+          <div class="loading-card" v-if="loadingShow">
+            <img class="loading" src="@/assets/img/loading.gif" />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
+      <!-- 收起按钮-->
+      <div class="expand-button" v-on:click="alarmMore = !alarmMore">
+        <img
+          class="expand"
+          v-bind:class="{ show: alarmMore }"
+          src="@/assets/img/nav_expand.svg"
+        />
+        <img
+          class="closed"
+          v-bind:class="{ show: !alarmMore }"
+          src="@/assets/img/nav_hide.svg"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -228,6 +305,7 @@ export default {
       totalPage: 1,
       loadingShow: false,
       searchLoading: false,
+      alarmMore: false,
     };
   },
   created: async function () {
@@ -316,6 +394,9 @@ export default {
           message: "当前设备暂时无法定位！",
         });
       }
+    },
+    getDevAlarmList: async function() {
+      
     },
     onSearch: async function () {
       this.searchLoading = true;

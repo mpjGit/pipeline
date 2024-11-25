@@ -6,6 +6,9 @@ function resolve(dir) {
 
 module.exports = {
     lintOnSave: false,
+    publicPath: process.env.NODE_ENV === 'production'
+                ? '/sense/'
+                : '/',
     devServer: {
         // public: 'vector-set.nas.aidimedia.net:8080'
         open: true,
