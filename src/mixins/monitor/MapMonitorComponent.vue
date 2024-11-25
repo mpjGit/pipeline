@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 右侧报警的导航栏 -->
-    <div class="nav-tab" id="notiNavTab">
+    <!-- <div class="nav-tab" id="notiNavTab">
       <div
         v-for="item in getShowRoutes"
         :key="item.name"
@@ -17,7 +17,7 @@
       >
         {{ getPaneLabel(item.type.slice(0, 2)) }}
       </div>
-    </div>
+    </div> -->
 
     <!-- 通知信息 -->
     <NewNotificationBlock
@@ -31,12 +31,12 @@
       :type="filterType"
     />
 
-    <down-hole-notification-block
+    <!-- <down-hole-notification-block
       v-else
       class="notification-container"
       :inFullScreen="isFullScreen"
       :type="filterType"
-    />
+    /> -->
 
     <!-- 通知信息提示 -->
 
@@ -51,38 +51,11 @@
         :error_count="summary.error_count"
         :normal_count="summary.normal_count"
       />
-      <div class="search-container-auto-acc">
-        <el-autocomplete
-          popper-class="my-autocomplete"
-          v-model="searchedDevice"
-          :fetch-suggestions="querySearch"
-          placeholder="查询设备名称"
-          @select="handleSelect"
-        >
-          <i
-            class="el-icon-delete el-input__icon"
-            style="cursor: pointer; color: #181818"
-            slot="suffix"
-            @click="handleIconClick"
-          >
-          </i>
-          <template slot-scope="{ item }">
-            <div class="name">设备名: {{ item.name }}</div>
-            <span class="addr"
-              >{{
-                item.deviceType === "downhole"
-                  ? "无线智能终端"
-                  : item.deviceType
-              }}设备</span
-            >
-          </template>
-        </el-autocomplete>
-      </div>
     </div>
 
     <!-- 下面的查询列表 -->
     <div :class="['search-list', showMore ? 'morelists' : '', avoidNav ? 'avoidNav' : '']">
-      <el-form :model="formData" :inline="true" class="search-form">
+      <el-form :model="formData" :inline="true" class="search-form" label-width="80px">
         <el-form-item label="关键字">
           <el-input
             width="200px"
@@ -100,9 +73,9 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item class="search-item">
+        <div class="search-item">
           <el-button type="primary" @click="onSearch">查询</el-button>
-        </el-form-item>
+        </div>
       </el-form>
 
       <el-tabs
@@ -125,7 +98,7 @@
               class="item-card"
               @click.native="handleClickDevice(item)"
             >
-              <el-descriptions :title="`${item.name}(${item.code})`">
+              <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
                 <el-descriptions-item label="信号强度">{{
                   item.signalStrength
                 }}</el-descriptions-item>
@@ -150,8 +123,6 @@
                 <el-descriptions-item label="出气压力">{{
                   item.ventMpa
                 }}</el-descriptions-item>
-                <el-descriptions-item label="预留">江苏</el-descriptions-item>
-                <el-descriptions-item label="预留">江苏</el-descriptions-item>
                 <el-descriptions-item label="当前时间">{{
                   item.uploadTime
                 }}</el-descriptions-item>
@@ -174,83 +145,6 @@
         <img
           class="closed"
           v-bind:class="{ show: showMore }"
-          src="@/assets/img/nav_hide.svg"
-        />
-      </div>
-    </div>
-
-    <!-- 告警列表的查询 -->
-    <div class="alarm-list">
-      <!-- 列表区域 -->
-      <el-tabs
-        v-model="activeTab"
-        type="border-card"
-        class="lists"
-        @tab-click="setActiveTab"
-      >
-        <el-tab-pane
-          v-for="item in tabData"
-          :key="item.distinguish"
-          :label="deviceType_toStr(item.distinguish)"
-          :name="item.distinguish"
-        >
-          <div class="ls-content">
-            <el-card
-              v-for="item in searchList"
-              :key="item.uuid"
-              shadow="always"
-              class="item-card"
-              @click.native="handleClickDevice(item)"
-            >
-              <el-descriptions :title="`${item.name}(${item.code})`">
-                <el-descriptions-item label="信号强度">{{
-                  item.signalStrength
-                }}</el-descriptions-item>
-                <el-descriptions-item label="电池电压值">{{
-                  item.battery
-                }}</el-descriptions-item>
-                <el-descriptions-item label="浓度">{{
-                  item.density
-                }}</el-descriptions-item>
-                <el-descriptions-item label="温度">{{
-                  item.temperature
-                }}</el-descriptions-item>
-                <el-descriptions-item label="液位状态">{{
-                  item.liquidLevel === 0 ? "正常" : "超限"
-                }}</el-descriptions-item>
-                <el-descriptions-item label="门禁状态">{{
-                  item.entranceGuard === 0 ? "正常" : "异常"
-                }}</el-descriptions-item>
-                <el-descriptions-item label="进气压力">{{
-                  item.intakeMpa
-                }}</el-descriptions-item>
-                <el-descriptions-item label="出气压力">{{
-                  item.ventMpa
-                }}</el-descriptions-item>
-                <el-descriptions-item label="预留">江苏</el-descriptions-item>
-                <el-descriptions-item label="预留">江苏</el-descriptions-item>
-                <el-descriptions-item label="当前时间">{{
-                  item.uploadTime
-                }}</el-descriptions-item>
-              </el-descriptions>
-            </el-card>
-          </div>
-          <div class="loading-card" v-if="loadingShow">
-            <img class="loading" src="@/assets/img/loading.gif" />
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-
-      <!-- 收起按钮-->
-      <div class="expand-button" v-on:click="alarmMore = !alarmMore">
-        <img
-          class="expand"
-          v-bind:class="{ show: alarmMore }"
-          src="@/assets/img/nav_expand.svg"
-        />
-        <img
-          class="closed"
-          v-bind:class="{ show: !alarmMore }"
           src="@/assets/img/nav_hide.svg"
         />
       </div>
@@ -286,7 +180,6 @@ export default {
     return {
       curNavType: PageTypeEnum.DOWNHOLE,
       navRouter: {},
-      searchedDevice: "",
       deviceSearchList: [],
       showMore: false, // true is close , false is open
       tabData: [],
@@ -439,20 +332,6 @@ export default {
 
       this.loadingShow = false;
     },
-    handleSelect(item) {
-      this.searchedDevice = item.name;
-      const [longitude, latitude] = item.position;
-      let map = this.getMap();
-      var point = new BMapGL.Point(Number(longitude), Number(latitude));
-      map.centerAndZoom(point, 14);
-      setTimeout(() => {
-        map.centerAndZoom(point, 20);
-      }, 1500);
-      map.enableScrollWheelZoom(true);
-    },
-    handleIconClick() {
-      this.searchedDevice = "";
-    },
     createFilter(queryString) {
       return (deviceList) => {
         console.log({
@@ -463,14 +342,6 @@ export default {
           deviceList.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
         );
       };
-    },
-    querySearch(queryString, cb) {
-      const deviceList = this.allDevices.map((item) => item);
-      const results = queryString
-        ? deviceList.filter(this.createFilter(queryString))
-        : deviceList;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
     },
     getPaneLabel(name) {
       const { monitorData } = this.$store.state.notification;
@@ -508,27 +379,6 @@ export default {
 
 <style scoped lang="less">
 @import "../../styles/common";
-
-.my-autocomplete {
-  background: #aeb7b740;
-  li {
-    line-height: normal;
-    padding: 7px;
-
-    .name {
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .addr {
-      font-size: 12px;
-      color: #b4b4b4;
-    }
-
-    .highlighted .addr {
-      color: #ddd;
-    }
-  }
-}
 
 .nav-tab {
   z-index: 22;
@@ -667,25 +517,22 @@ export default {
   z-index: 99999999 !important;
 }
 
-.search-container-auto-acc {
-  top: 2rem;
-}
-
 .search-list {
   z-index: 9;
-  width: 5rem;
-  height: 45vh;
+  width: 4.2rem;
+  height: 64vh;
   color: white;
   background: #222a3644;
   border-radius: 0.16rem 0.16rem 0.16rem 0.16rem;
   position: relative;
-  top: 2rem;
+  top: 1rem;
+  left: 25px;
   font-size: 0.2rem;
   padding: 0.3rem 0.22rem;
   transition: width 1s ease-in-out, transform .5s ease-in-out;
   
   &.morelists {
-    width: 14rem;
+    width: 10rem;
   }
 
   &.avoidNav {
@@ -696,9 +543,8 @@ export default {
     position: relative;
     width: 6rem;
     .search-item {
-      position: absolute;
-      top: 65px;
-      right: 80px;
+      position: relative;
+      left: 80px;
     }
   }
 
@@ -706,11 +552,18 @@ export default {
     .el-form--inline .el-form-item__label {
       color: #58f;
     }
+
+    .el-descriptions__header {
+      margin-bottom: 10px;
+    }
+    .el-card__body, .el-main {
+      padding: 10px;
+    }
   }
 
   .lists {
     margin-top: 10px;
-    height: 30vh;
+    height: 50vh;
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: 10px;
@@ -721,8 +574,9 @@ export default {
       flex-wrap: wrap;
       gap: 8px;
       height: auto;
+      padding-left: 24px;
       .item-card {
-        width: 4.4rem;
+        width: 3rem;
         height: 2rem;
       }
     }

@@ -198,3 +198,28 @@ div {
 	  color: white;
 	  background: linear-gradient(to right, #6bcbb4, #ff8134);
 }
+
+/* 滚动条 */
+/* 整体滚动条 */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+	background-color: #ffffff;
+	border-radius: 6px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+	background-color: #888;
+	border-radius: 6px;
+	border: 2px solid #f1f1f1;
+}
+
+/* 滚动条滑块 - 悬停 */
+::-webkit-scrollbar-thumb:hover {
+	background-color: #555;
+}
+  
