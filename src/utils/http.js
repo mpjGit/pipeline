@@ -15,7 +15,8 @@ const isMileagePage = () => {
 export const request = {
 	post(url,params) {
 		const isMileage = isMileagePage();
-		const reqUrl = url.startsWith('/q/') ? serverUrl_new : serverUrl;
+		const regex = /^\/(q|c)\//;
+		const reqUrl = regex.test(url) ? serverUrl_new : serverUrl;
 		return fetch(reqUrl + url, {
 			method: 'POST',
 			body: JSON.stringify(params),
@@ -30,7 +31,8 @@ export const request = {
 	},
 	get(url) {
 		const isMileage = isMileagePage();
-		const reqUrl = url.startsWith('/q/') ? serverUrl_new : serverUrl;
+		const regex = /^\/(q|c)\//;
+		const reqUrl = regex.test(url) ? serverUrl_new : serverUrl;
 		return fetch(reqUrl + url, {
 			method: 'GET',
 			headers: {

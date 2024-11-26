@@ -151,7 +151,14 @@
     </div>
 
     <!-- 右侧报警列表 -->
-    <div class="alarm-list">
+    <div :class="['alarm-list', alarmMore ? 'more-list' : '']">
+      <div class="list-title">
+        <span>报警列表</span>
+        <el-button :type="allVoice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" class="voice-btn" size="small" @click.stop="setAllVoice()">
+          {{ allVoice === 'ALARM_VOICE_TRUE' ? '全部静音' : '全部报警'}}
+        </el-button>
+      </div>
+
       <el-tabs
         v-model="activeAlarmTab"
         type="border-card"
@@ -166,59 +173,46 @@
         >
           <div class="ls-content">
             <el-card
-              v-for="item in searchList"
+              v-for="item in alarmList"
               :key="item.uuid"
               shadow="always"
               class="item-card"
-              @click.native="handleClickDevice(item)"
+              @click.native="handleClickAlarm(item)"
             >
               <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
-                <el-descriptions-item label="信号强度">{{
-                  item.signalStrength
+                <template slot="extra">
+                  <el-button :type="item.voice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" size="small" @click.stop="setVoice(item)">
+                    {{ item.voice === 'ALARM_VOICE_TRUE' ? '静音' : '报警'}}
+                  </el-button>
+                </template>
+                <el-descriptions-item label="设备">{{
+                  item.distinguish
                 }}</el-descriptions-item>
-                <el-descriptions-item label="电池电压值">{{
-                  item.battery
+                <el-descriptions-item label="报警码">{{
+                  item.alarmCode
                 }}</el-descriptions-item>
-                <el-descriptions-item label="浓度">{{
+                <el-descriptions-item label="浓度（井下）" span="2">{{
                   item.density
                 }}</el-descriptions-item>
-                <el-descriptions-item label="温度">{{
-                  item.temperature
-                }}</el-descriptions-item>
-                <el-descriptions-item label="液位状态">{{
-                  item.liquidLevel === 0 ? "正常" : "超限"
-                }}</el-descriptions-item>
-                <el-descriptions-item label="门禁状态">{{
-                  item.entranceGuard === 0 ? "正常" : "异常"
-                }}</el-descriptions-item>
-                <el-descriptions-item label="进气压力">{{
-                  item.intakeMpa
-                }}</el-descriptions-item>
-                <el-descriptions-item label="出气压力">{{
-                  item.ventMpa
-                }}</el-descriptions-item>
-                <el-descriptions-item label="当前时间">{{
-                  item.uploadTime
+                <el-descriptions-item label="报警时间" span="2">{{
+                  item.alarmTime
                 }}</el-descriptions-item>
               </el-descriptions>
             </el-card>
-          </div>
-          <div class="loading-card" v-if="loadingShow">
-            <img class="loading" src="@/assets/img/loading.gif" />
           </div>
         </el-tab-pane>
       </el-tabs>
 
       <!-- 收起按钮-->
-      <div class="expand-button" v-on:click="showMore = !showMore">
+      <div class="expand-left-button" v-on:click="alarmMore = !alarmMore">
         <img
           class="expand"
-          v-bind:class="{ show: !showMore }"
+          v-bind:class="{ show: alarmMore }"
           src="@/assets/img/nav_expand.svg"
         />
         <img
           class="closed"
-          v-bind:class="{ show: showMore }"
+          v-bind:class="{ show: !alarmMore }"
           src="@/assets/img/nav_hide.svg"
         />
       </div>
@@ -234,7 +228,7 @@ import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
 import { deviceType_toStr } from "@/utils/tool";
 import { mapActions } from "vuex";
-import { getDeviceJXList } from "@/api/apiHandler";
+import { getDeviceJXList, getDevAlarmList, setVoiceStatus } from "@/api/apiHandler";
 
 export default {
   name: "MapNewComponent.vue",
@@ -256,6 +250,7 @@ export default {
       showMore: false, // true is close , false is open
       tabData: [],
       activeTab: "",
+      activeAlarmTab: "",
       enterpriseUuid: "",
       formData: {
         enterpriseUuid: "",
@@ -265,21 +260,31 @@ export default {
         startTime: "",
         endTime: "",
       },
+      alarmForm: {
+        enterpriseUuid: "",
+        distinguish: 'DEVICE_ALL'
+      },
       searchList: [],
+      alarmList: [],
       searchLists: [],
       totalPage: 1,
       loadingShow: false,
       searchLoading: false,
       alarmMore: false,
+      isSetVoice: false,
+      allVoice: 'ALARM_VOICE_FALSE'
     };
   },
   created: async function () {
     this.formData.enterpriseUuid = this.$store.state.user.enterpriseUuid; // 获取请求必备参数
+    this.alarmForm.enterpriseUuid = this.$store.state.user.enterpriseUuid; // 获取请求必备参数
     this.$store.commit("setNotificationTab", this.curNavType);
     const data = await this.$store.dispatch("getUserRoutes");
     this.tabData = data;
     this.activeTab = data[0].distinguish;
+    this.activeAlarmTab = data[0].distinguish;
     this.onSearch(); // 先执行一次查询
+    this.getDevAlarmList(); 
   },
   mounted: function () {
     window.addEventListener("scroll", this.handleScroll, true);
@@ -364,8 +369,25 @@ export default {
         });
       }
     },
+    handleClickAlarm(item) {
+      const map = this.getMap();
+      const { lon, lat } = item;
+      if ( lon && lat ) {
+        var point = new BMapGL.Point(Number(lon), Number(lat));
+        map.centerAndZoom(point, 20);
+      } else {
+        this.$store.dispatch("toast/showToast", {
+          message: "当前报警暂时无法定位！",
+        });
+      }
+    },
     getDevAlarmList: async function() {
-      
+      const res = await getDevAlarmList({
+        ...this.alarmForm,
+      });
+      if (res && res.code === 200) {
+        this.alarmList = res.data;
+      }
     },
     onSearch: async function () {
       this.searchLoading = true;
@@ -407,6 +429,36 @@ export default {
       }
 
       this.loadingShow = false;
+    },
+    setVoice(item) {
+      let { uuid, voice = 'ALARM_VOICE_FALSE' } = item;
+      if (voice === 'ALARM_VOICE_TRUE') {
+        voice = 'ALARM_VOICE_FALSE'
+      } else {
+        voice = 'ALARM_VOICE_TRUE'
+      }
+      item.voice = voice;
+      this.alarmList = [...this.alarmList];
+      setVoiceStatus({
+        enterpriseUuid: this.formData.enterpriseUuid,
+        uuid,
+        voiceStatus: voice
+      })
+    },
+    setAllVoice() {
+      if (this.allVoice === 'ALARM_VOICE_TRUE') {
+        this.allVoice = 'ALARM_VOICE_FALSE';
+      } else {
+        this.allVoice = 'ALARM_VOICE_TRUE'
+      }
+      this.alarmList.forEach(item => {
+        if (item.voice === 'ALARM_VOICE_TRUE') {
+          item.voice = 'ALARM_VOICE_FALSE'
+        } else {
+          item.voice = 'ALARM_VOICE_TRUE'
+        }
+      })
+      this.alarmList = [...this.alarmList]
     },
     createFilter(queryString) {
       return (deviceList) => {
@@ -679,6 +731,92 @@ export default {
     z-index: 10;
     position: absolute;
     right: 0;
+    top: 50%;
+    margin-top: -0.2rem;
+    display: flex;
+
+    .show {
+      display: block;
+    }
+
+    img {
+      display: none;
+    }
+
+    &:hover {
+      background-color: rgba(42, 54, 68, 0.5);
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.alarm-list {
+  z-index: 9;
+  width: 4.2rem;
+  height: 64vh;
+  color: white;
+  background: #222a3644;
+  border-radius: 0.16rem 0.16rem 0.16rem 0.16rem;
+  position: absolute;
+  right: 25px;
+  top: 185px;
+  font-size: 0.2rem;
+  padding: 0.3rem 0.22rem;
+  transition: width 1s ease-in-out, transform .5s ease-in-out;
+
+  &.more-list {
+    width: 10rem;
+  }
+
+  .list-title {
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    padding: 8px;
+    font-size: 24px;
+    font-weight: bolder;
+    color: #f23a5f;
+    position: relative;
+    .voice-btn {
+      position: absolute;
+      right: 40px;
+      top: 10px;
+    }
+  }
+
+  .lists {
+    margin-top: 10px;
+    height: 58vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 10px;
+
+    .ls-content {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+      height: auto;
+      padding-left: 8px;
+      .item-card {
+        width: 4.4rem;
+        height: 2rem;
+      }
+    }
+  }
+
+
+  .expand-left-button {
+    cursor: pointer;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background-color: rgba(42, 54, 1, 0.7);
+    margin-left: -0.2rem;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    z-index: 10;
+    position: absolute;
+    left: 0;
     top: 50%;
     margin-top: -0.2rem;
     display: flex;

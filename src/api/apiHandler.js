@@ -20,6 +20,11 @@ export const getDevAlarmList = (params) => {
     return get(`/q/all-device-infos/get-alarm-list/${params.enterpriseUuid}/${params.distinguish}`)
 }
 
+// 静音和取消静音
+export const setVoiceStatus = (params) => {
+    return get(`/c/corp-device-jx-alarms/update-voice/${params.enterpriseUuid}/${params.voiceStatus}/${params.uuid}`)
+}
+
 // 获取开路设备列表
 export const getOpenDeviceList = (params) => {
     return post('/user/Jikong/getKaiLuDeviceList', {...params})

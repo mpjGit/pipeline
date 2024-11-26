@@ -29,7 +29,8 @@ export const concatParams = (params) => {
 };
 export function get(url, params = {}) {
     return new Promise((resolve, reject) => {
-        const _url = url.startsWith('/q/') ? NEW_URL + url : url;
+        const regex = /^\/(q|c)\//;
+        const _url = regex.test(url) ? NEW_URL + url : url;
         axios
             .get(_url, {
                 params,
@@ -46,7 +47,8 @@ export function get(url, params = {}) {
 
 export function post(url, data = {}) {
     return new Promise((resolve, reject) => {
-        const _url = url.startsWith('/q/') ? NEW_URL + url : BASE_URL + url + concatParams(data);
+        const regex = /^\/(q|c)\//;
+        const _url = regex.test(url) ? NEW_URL + url : BASE_URL + url + concatParams(data);
         // axios.post(BASE_URL + url + concatParams(data), data).then(
         axios.post(_url, data).then(
             (response) => {
