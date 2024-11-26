@@ -2,6 +2,7 @@
 node_modules
 /dist
 /src/assets/removeable
+/dist.zip
 
 
 # local env files
