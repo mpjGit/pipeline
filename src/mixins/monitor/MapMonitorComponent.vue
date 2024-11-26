@@ -149,6 +149,80 @@
         />
       </div>
     </div>
+
+    <!-- 右侧报警列表 -->
+    <div class="alarm-list">
+      <el-tabs
+        v-model="activeAlarmTab"
+        type="border-card"
+        class="lists"
+        @tab-click="setActiveAlarmTab"
+      >
+        <el-tab-pane
+          v-for="item in tabData"
+          :key="item.distinguish"
+          :label="deviceType_toStr(item.distinguish)"
+          :name="item.distinguish"
+        >
+          <div class="ls-content">
+            <el-card
+              v-for="item in searchList"
+              :key="item.uuid"
+              shadow="always"
+              class="item-card"
+              @click.native="handleClickDevice(item)"
+            >
+              <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
+                <el-descriptions-item label="信号强度">{{
+                  item.signalStrength
+                }}</el-descriptions-item>
+                <el-descriptions-item label="电池电压值">{{
+                  item.battery
+                }}</el-descriptions-item>
+                <el-descriptions-item label="浓度">{{
+                  item.density
+                }}</el-descriptions-item>
+                <el-descriptions-item label="温度">{{
+                  item.temperature
+                }}</el-descriptions-item>
+                <el-descriptions-item label="液位状态">{{
+                  item.liquidLevel === 0 ? "正常" : "超限"
+                }}</el-descriptions-item>
+                <el-descriptions-item label="门禁状态">{{
+                  item.entranceGuard === 0 ? "正常" : "异常"
+                }}</el-descriptions-item>
+                <el-descriptions-item label="进气压力">{{
+                  item.intakeMpa
+                }}</el-descriptions-item>
+                <el-descriptions-item label="出气压力">{{
+                  item.ventMpa
+                }}</el-descriptions-item>
+                <el-descriptions-item label="当前时间">{{
+                  item.uploadTime
+                }}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </div>
+          <div class="loading-card" v-if="loadingShow">
+            <img class="loading" src="@/assets/img/loading.gif" />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
+      <!-- 收起按钮-->
+      <div class="expand-button" v-on:click="showMore = !showMore">
+        <img
+          class="expand"
+          v-bind:class="{ show: !showMore }"
+          src="@/assets/img/nav_expand.svg"
+        />
+        <img
+          class="closed"
+          v-bind:class="{ show: showMore }"
+          src="@/assets/img/nav_hide.svg"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -156,7 +230,6 @@
 import calculateDevices from "@/mixins/monitor/calcMonitorDevices";
 import updateDeviceSignOnMap from "@/mixins/monitor/updateMonitorDeviceSignOnMap";
 import NewNotificationBlock from "@/components/map/NewNotificationBlock.vue";
-import DownHoleNotificationBlock from "@/components/NotificationBlock.vue";
 import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
 import { deviceType_toStr } from "@/utils/tool";
@@ -168,7 +241,6 @@ export default {
   components: {
     SummaryBlock: summary,
     NewNotificationBlock,
-    DownHoleNotificationBlock,
   },
   props: {
     avoidNav: Boolean,
@@ -258,6 +330,10 @@ export default {
     setActiveTab(value) {
       const { paneName } = value;
       this.activeTab = paneName;
+    },
+    setActiveAlarmTab(value) {
+      const { paneName } = value;
+      this.activeAlarmTab = paneName;
     },
     deviceType_toStr(type) {
       return deviceType_toStr(type);
@@ -525,7 +601,6 @@ export default {
   background: #222a3644;
   border-radius: 0.16rem 0.16rem 0.16rem 0.16rem;
   position: relative;
-  top: 1rem;
   left: 25px;
   font-size: 0.2rem;
   padding: 0.3rem 0.22rem;
@@ -543,8 +618,9 @@ export default {
     position: relative;
     width: 6rem;
     .search-item {
-      position: relative;
-      left: 80px;
+      position: absolute;
+      top: 0;
+      right: 230px;
     }
   }
 
