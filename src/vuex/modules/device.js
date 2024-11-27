@@ -1,5 +1,5 @@
 import {request} from "@/utils/http";
-import {getEventById, getDeviceShowProper} from "@/api/apiHandler";
+import {getEventById, getDeviceShowProper, fetchAllMapDevice} from "@/api/apiHandler";
 import {isWarnMsg, isFaultMsg, isMileageWarnMsg, isMileageFaultMsg} from "@/utils/tool";
 import EventBus from "@/utils/eventBus";
 import Login from "@/pages/Login.vue";
@@ -95,7 +95,8 @@ const moduleDevice = {
         },
     },
 
-    mutations: { //逻辑处理，但Mutation 必须是同步函数
+    mutations: {
+        // 设置设备
         updateDeviceStatus(state, deviceList) {
             const page = state.filterType[0];
             if (page === PageTypeEnum.MONITOR) {
@@ -111,7 +112,6 @@ const moduleDevice = {
             }
             state.devices = deviceList;
         },
-
         updateMileageDeviceStatus(state, deviceList) {
             const page = state.filterType[0];
             if (page === PageTypeEnum.MONITOR) {
@@ -136,7 +136,7 @@ const moduleDevice = {
         clearDeviceTrackPoint(state) {
             state.deviceTrackPoint = {};
         },
-
+        // 
         setNewDeviceStatus(state, deviceList) {
             const page = state.filterType[0];
             if (page === PageTypeEnum.MONITOR) {
@@ -257,67 +257,67 @@ const moduleDevice = {
                 lichengzhuangbaojing
             });
         },
-
-        //Action 类似于 mutation,Action 提交的是 mutation，而不是直接变更状态;Action 可以包含任意异步操作.
-        updateDeviceStatus(context) {
-            request.post('getposition', {
-                username: context.rootState.user.username
+        // 设置井下设备位置信息
+        updateDeviceStatus({ rootState, context }) {
+            fetchAllMapDevice({
+                distinguish: rootState.user.data.distinguish,
+                enterpriseUuid: rootState.user.enterpriseUuid
             }).then(res => {
                 // console.log(res)
                 let formatDeviceList = [];
-                const positions = res.result;
+                const positions = res.data || [];
                 if (Array.isArray(positions)) {
                     positions.map((value) => {
                         // 设备状态的格式化
                         let deviceStatus = NORMAL;
-                        if (isFaultMsg(value.fault)) {
-                            deviceStatus = WARN;
-                        }
-                        if (isWarnMsg(value.fault)) {
-                            deviceStatus = ERROR
-                        }
+                        // if (isFaultMsg(value.fault)) {
+                        //     deviceStatus = WARN;
+                        // }
+                        // if (isWarnMsg(value.fault)) {
+                        //     deviceStatus = ERROR
+                        // }
                         // 设备的位置信息
-                        let lat = value.latitude;
-                        let lng = value.longitude;
+                        let lat = value.lat;
+                        let lng = value.lon;
                         const fieldList = [
                             {
                                 name: '浓度',
-                                value: value.CH4
+                                value: value.CH4 || '未知'
                             },
                             {
                                 name: '信号强度',
-                                value: value.signal
+                                value: value.signal || '未知'
                             },
                             {
                                 name: '电量',
-                                value: `${Number(value.power) / 100}V`
+                                // value: `${Number(value.power) / 100}V`
+                                value: '未知'
                             },
                             {
                                 name: '进气口压强',
-                                value: value.entrance_pressure,
+                                value: value.entrance_pressure || '未知',
                             },
                             {
                                 name: '出气口压强',
-                                value: value.exit_pressure,
+                                value: value.exit_pressure || '未知',
                             }
                         ].filter(Boolean);
 
                         // 井下设备格式化
                         formatDeviceList.push({
                             fault: value.fault,
-                            name: value.nickname,
+                            name: value.nickname  || '未知',
                             fieldList,
                             deviceType: DOWNHOLE,
                             status: deviceStatus,
                             position: [lng, lat],
-                            id: value.id
+                            id: value.uuid
                         })
                     });
                     context.commit('updateDeviceStatus', formatDeviceList);
                 }
             })
         },
-        //Action 类似于 mutation,Action 提交的是 mutation，而不是直接变更状态;Action 可以包含任意异步操作.
         updateMileageDeviceStatus(context) {
             request.post('getposition', {
                 username: context.rootState.user.username,

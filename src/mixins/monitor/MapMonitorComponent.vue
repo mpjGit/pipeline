@@ -99,6 +99,11 @@
               @click.native="handleClickDevice(item)"
             >
               <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
+                <template slot="extra">
+                  <el-button size="small" @click.stop="showDetail(item)">
+                    详细信息
+                  </el-button>
+                </template>
                 <el-descriptions-item label="信号强度">{{
                   item.signalStrength
                 }}</el-descriptions-item>
@@ -179,10 +184,13 @@
               class="item-card"
               @click.native="handleClickAlarm(item)"
             >
-              <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
+              <el-descriptions :title="`${item.name}(${item.count})`" :column="2">
                 <template slot="extra">
                   <el-button :type="item.voice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" size="small" @click.stop="setVoice(item)">
                     {{ item.voice === 'ALARM_VOICE_TRUE' ? '静音' : '报警'}}
+                  </el-button>
+                  <el-button size="small" @click.stop="solveItem(item)">
+                    处理
                   </el-button>
                 </template>
                 <el-descriptions-item label="设备">{{
@@ -228,7 +236,7 @@ import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
 import { deviceType_toStr } from "@/utils/tool";
 import { mapActions } from "vuex";
-import { getDeviceJXList, getDevAlarmList, setVoiceStatus } from "@/api/apiHandler";
+import { getDeviceJXList, getDevAlarmList, setVoiceStatus, JXDeviceDetail } from "@/api/apiHandler";
 
 export default {
   name: "MapNewComponent.vue",
@@ -444,6 +452,23 @@ export default {
         uuid,
         voiceStatus: voice
       })
+    },
+    async solveItem(item) {
+
+      console.log("dataItem ===> ", item);
+
+      // statusType用于兼容开路设备
+      const { status = '报警', statusType = ERROR } = item;
+      let resInfo = null;
+      if (status === '报警' || statusType === ERROR) {
+        resInfo = await JXDeviceDetail({uuid: item.uuid})
+      }
+      if (resInfo.code === 200) {
+        this.$vModal({
+          info: resInfo.data,
+          type: ModalActionEnum.ALERT,
+        });
+      }
     },
     setAllVoice() {
       if (this.allVoice === 'ALARM_VOICE_TRUE') {
@@ -705,7 +730,7 @@ export default {
       padding-left: 24px;
       .item-card {
         width: 3rem;
-        height: 2rem;
+        height: 2.2rem;
       }
     }
     .loading-card {

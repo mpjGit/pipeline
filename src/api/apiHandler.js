@@ -20,9 +20,24 @@ export const getDevAlarmList = (params) => {
     return get(`/q/all-device-infos/get-alarm-list/${params.enterpriseUuid}/${params.distinguish}`)
 }
 
-// 静音和取消静音
+// 静音和取消静音(新)
 export const setVoiceStatus = (params) => {
     return get(`/c/corp-device-jx-alarms/update-voice/${params.enterpriseUuid}/${params.voiceStatus}/${params.uuid}`)
+}
+
+// 井下设备详情（新）
+export const JXDeviceDetail = (params) => {
+    return post(`/c/corp-device-jxs/update-record/${params.uuid}`)
+}
+
+// 处理设备报警（新）
+export const handleJXAlarm = (params) => {
+    return post(`/c/corp-device-jx-alarms/update-alarm-record/`, {...params})
+}
+
+// 获取所有设备（地图点位）
+export const fetchAllMapDevice = (data) => {
+    return post(`/q/all-device-infos/get-all-devices/${data.enterpriseUuid}/${data.distinguish}`)
 }
 
 // 获取开路设备列表

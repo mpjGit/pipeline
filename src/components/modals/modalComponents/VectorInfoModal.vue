@@ -66,6 +66,8 @@ import lingPai from "@/components/modals/modalComponents/lingPai.vue";
 import handleOpenDeviceInfo from "@/components/modals/modalComponents/handleOpenDeviceInfo.vue";
 import handleMillageDeviceInfo from "@/components/modals/modalComponents/handleMillageDeviceInfo.vue";
 import handleDownholeDeviceInfo from "@/components/modals/modalComponents/handleDownholeDeviceInfo.vue";
+import { handleJXAlarm } from "@/api/apiHandler";
+import EventBus from "@/utils/eventBus";
 
 export default {
   name: "VectorInfoModal",
@@ -142,12 +144,12 @@ export default {
     closeDialog() {
       this.visible = false;
     },
+    // 确认处理
     processConfirm(data) {
       if (!data) {
         console.error('传递处理人错误')
         return;
       }
-      console.log('processConfirm', data);
       const {implementer, type, id} = data;
       const statusTypeMap = {
         [ModalActionEnum.FAULT]: '故障',
@@ -163,7 +165,17 @@ export default {
         id,
         statusType: statusTypeMap[type],
       }
-      this.handleAlertWarn(params);
+      if (statusTypeMap[type] === '报警') {
+        delete data.type;
+        handleJXAlarm(data).then((res) => {
+          if (res.code == '200') {
+            this.toast("处理成功！");
+            EventBus.$emit('refreshPage', {});
+          }
+        });
+      } else {
+        this.handleAlertWarn(params);
+      }
       this.closeDialog();
     },
   },

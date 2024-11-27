@@ -32,8 +32,8 @@ select,
 button,
 textarea,
 menu {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 header,
@@ -48,22 +48,22 @@ figure,
 figcaption,
 menu,
 details {
-	display: block;
+  display: block;
 }
 
-*:focus{
-	outline: none!important;
+*:focus {
+  outline: none !important;
 }
 
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 caption,
 th {
-	text-align: left;
-	font-weight: normal;
+  text-align: left;
+  font-weight: normal;
 }
 
 html,
@@ -72,7 +72,7 @@ fieldset,
 img,
 iframe,
 abbr {
-	border: 0;
+  border: 0;
 }
 
 i,
@@ -81,16 +81,16 @@ em,
 var,
 address,
 dfn {
-	font-style: normal;
+  font-style: normal;
 }
 
 [hidefocus],
 summary {
-	outline: 0;
+  outline: 0;
 }
 
 li {
-	list-style: none;
+  list-style: none;
 }
 
 h1,
@@ -100,45 +100,45 @@ h4,
 h5,
 h6,
 small {
-	font-size: 100%;
+  font-size: 100%;
 }
 
 sup,
 sub {
-	font-size: 83%;
+  font-size: 83%;
 }
 
 pre,
 code,
 kbd,
 samp {
-	font-family: inherit;
+  font-family: inherit;
 }
 
 q:before,
 q:after {
-	content: none;
+  content: none;
 }
 
 textarea {
-	overflow: auto;
-	resize: none;
+  overflow: auto;
+  resize: none;
 }
 
 label,
 summary {
-	cursor: default;
+  cursor: default;
 }
 
 a,
 button {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 em,
 strong,
 b {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 del,
@@ -147,7 +147,7 @@ u,
 s,
 a,
 a:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 body,
@@ -157,18 +157,20 @@ button,
 select,
 keygen,
 legend {
-	font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
-	color: #444;
-	outline: 0;
-	-webkit-text-size-adjust: none;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC,
+    Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei,
+    sans-serif;
+  color: #444;
+  outline: 0;
+  -webkit-text-size-adjust: none;
 }
 
 body {
-	background: #fff;
+  background: #fff;
 }
 
-a{
-	cursor: pointer;
+a {
+  cursor: pointer;
 }
 
 input,
@@ -177,49 +179,70 @@ select,
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-	-webkit-appearance: none;
-	border-radius: 0;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-appearance: none;
+  border-radius: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 div {
-	-webkit-user-select: none;
-	-webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .good-button {
-	background-color: rgba(42, 54, 68, 0.3);
-	border-radius: 0.22rem;
-	text-align: center;
-	cursor: pointer;
-
+  background-color: rgba(42, 54, 68, 0.3);
+  border-radius: 0.22rem;
+  text-align: center;
+  cursor: pointer;
 }
 .good-button:hover {
-	  color: white;
-	  background: linear-gradient(to right, #6bcbb4, #ff8134);
+  color: white;
+  background: linear-gradient(to right, #6bcbb4, #ff8134);
 }
 
 /* 滚动条 */
 /* 整体滚动条 */
 ::-webkit-scrollbar {
-	width: 10px;
+  width: 10px;
 }
 
 /* 滚动条轨道 */
 ::-webkit-scrollbar-track {
-	background-color: #ffffff;
-	border-radius: 6px;
+  background-color: #ffffff;
+  border-radius: 6px;
 }
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-	background-color: #888;
-	border-radius: 6px;
-	border: 2px solid #f1f1f1;
+  background-color: #888;
+  border-radius: 6px;
+  border: 2px solid #f1f1f1;
 }
 
 /* 滚动条滑块 - 悬停 */
 ::-webkit-scrollbar-thumb:hover {
-	background-color: #555;
+  background-color: #555;
 }
-  
+
+/* placeHolder 颜色 */
+input::-webkit-input-placeholder {
+  /* Chrome, Opera, Safari */
+  color: #fff
+}
+
+input:-moz-placeholder {
+  /* Firefox 18- */
+  color: #fff;
+  opacity: 1; /* 修复老版本Firefox的不透明度问题 */
+}
+
+input::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #fff;
+  opacity: 1; /* 修复Firefox的不透明度问题 */
+}
+
+input:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #fff;
+}

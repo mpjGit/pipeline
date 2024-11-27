@@ -14,19 +14,25 @@
       <div class="grid-value-group">
         <ValueGroupCompact v-if="!faultItem.resolve" name="操作员" :value="username" type="select"
                     :options="[{name: username}]" v-on:change="onImplementerChange"/>
-        <ValueGroupCompact name="操作人员" :value="faultItem.operatorName"/>
+        <ValueGroupCompact name="操作人员" :value="faultItem.updateBy"/>
         <ValueGroupCompact name="经纬度"
-                           :value="`(${Number(faultItem.latitude).toFixed(2)},${Number(faultItem.longitude).toFixed(2)})`"/>
-        <ValueGroupCompact name="浓度" :value="faultItem.concentration"/>
-        <ValueGroupCompact name="光强" :value="faultItem.lightIntensity"/>
-        <ValueGroupCompact name="设备类型" :value="faultItem.type"/>
+                           :value="`(${Number(faultItem.lat).toFixed(2)},${Number(faultItem.lon).toFixed(2)})`"/>
+        <ValueGroupCompact name="浓度" :value="faultItem.density"/>
+        <ValueGroupCompact name="信号强度" :value="faultItem.signalStrength"/>
+        <ValueGroupCompact name="电池电压" :value="faultItem.battery"/>
+        <ValueGroupCompact name="最后上传时间" :value="faultItem.uploadTime"/>
+        <ValueGroupCompact name="电池电压" :value="faultItem.battery"/>
+        <!-- <ValueGroupCompact name="光强" :value="faultItem.lightIntensity"/>
+        <ValueGroupCompact name="设备类型" :value="faultItem.type"/> -->
 <!--        <ValueGroupCompact name="事件时间" :value="faultItem.time"/>-->
         <ValueGroupCompact name="温度" :value="`${faultItem.temperature}℃`"/>
+        <ValueGroupCompact name="液位状态" :value="`${faultItem.liquidLevel === 1 ? '超限' : '正常'}`"/>
+        <ValueGroupCompact name="门禁状态" :value="`${faultItem.entranceGuard === 1 ? '异常' : '正常'}`"/>
         <ValueGroupCompact v-if="isCarPage" name="车速" :value="faultItem.nospeed"/>
-        <ValueGroupCompact name="设备名称" :value="faultItem.deviceName"/>
+        <!-- <ValueGroupCompact name="设备名称" :value="faultItem.deviceName"/> -->
         <ValueGroupCompact name="备注" :value="faultItem.remarks"/>
-        <ValueGroupCompact class="area-start-time" name="起始时间" :value="faultItem.startTime"/>
-        <ValueGroupCompact class="area-end-time" name="结束时间" :value="faultItem.endTime"/>
+        <ValueGroupCompact class="area-start-time" name="创建时间" :value="faultItem.createAt"/>
+        <ValueGroupCompact class="area-end-time" name="修改时间" :value="faultItem.updateAt"/>
       </div>
       <v-image :url="faultItem.screenshot"></v-image>
       <v-image v-for="item in faultItem.photo" :key="item" :url="item"></v-image>
@@ -95,12 +101,13 @@ export default {
         alert('请选择操作人员！');
         return false;
       }
+
       this.showModal({
         message: '是否确定已处理?',
         onConfirm: () => {
           this.$emit('processConfirm', {
-            id: this.faultItem.id,
-            implementer: this.selectImplementer,
+            ...this.faultItem,
+            updateBy: this.$store.state.user.userId,
             remarks: this.currentRemarks,
             type: ModalActionEnum.ALERT,
           })
