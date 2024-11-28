@@ -62,11 +62,12 @@ export default {
       this.refreshMonitorWarnFaultList();
     }, 4 * 1000);
 
-    this.timer1 = setInterval(() => {
-      this.$store.dispatch('updateDeviceStatus');
-      this.$store.dispatch('updateMileageDeviceStatus');
-      this.$store.dispatch('updateNewDeviceStatus');
-    }, 10 * 1000);
+    // 暂时不需要按十秒更新一次地图信息（需要搞清楚这几个数据）
+    // this.timer1 = setInterval(() => {
+    //   this.$store.dispatch('updateDeviceStatus');
+    //   this.$store.dispatch('updateMileageDeviceStatus');
+    //   this.$store.dispatch('updateNewDeviceStatus');
+    // }, 10 * 1000);
 
 
 

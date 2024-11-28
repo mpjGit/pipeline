@@ -117,6 +117,7 @@ Vue.mixin({
 
             });
             // 将设备标点增加到地图上
+            console.log("marker ====> ", marker)
             map.addOverlay(marker);
             // 返回数据、及部分操作函数
             return {

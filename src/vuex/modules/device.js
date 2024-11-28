@@ -1,5 +1,5 @@
 import {request} from "@/utils/http";
-import {getEventById, getDeviceShowProper, fetchAllMapDevice} from "@/api/apiHandler";
+import {getEventById, getDeviceShowProper, fetchAllMapDevice, getDeviceInfos} from "@/api/apiHandler";
 import {isWarnMsg, isFaultMsg, isMileageWarnMsg, isMileageFaultMsg} from "@/utils/tool";
 import EventBus from "@/utils/eventBus";
 import Login from "@/pages/Login.vue";
@@ -96,7 +96,7 @@ const moduleDevice = {
     },
 
     mutations: {
-        // 设置设备
+        // 设置设备 (旧)
         updateDeviceStatus(state, deviceList) {
             const page = state.filterType[0];
             if (page === PageTypeEnum.MONITOR) {
@@ -112,6 +112,25 @@ const moduleDevice = {
             }
             state.devices = deviceList;
         },
+
+        // 设置设备 （新）
+        setNewDeviceStatus(state, deviceList) {
+            const page = state.filterType[0];
+            if (page === PageTypeEnum.MONITOR) {
+                const showDevice = this.state.user.routes.map((item) => {
+                    if (item.show) {
+                        return item.type;
+                    }
+                    return false;
+                }).filter(Boolean);
+                deviceList = deviceList.filter((item) => {
+                    return showDevice.includes(item.deviceType)
+                });
+            }
+            // 更新除了井上设备的设备列表
+            state.newDevices = deviceList;
+        },
+        // 设置Mileage设备数据
         updateMileageDeviceStatus(state, deviceList) {
             const page = state.filterType[0];
             if (page === PageTypeEnum.MONITOR) {
@@ -135,23 +154,6 @@ const moduleDevice = {
 
         clearDeviceTrackPoint(state) {
             state.deviceTrackPoint = {};
-        },
-        // 
-        setNewDeviceStatus(state, deviceList) {
-            const page = state.filterType[0];
-            if (page === PageTypeEnum.MONITOR) {
-                const showDevice = this.state.user.routes.map((item) => {
-                    if (item.show) {
-                        return item.type;
-                    }
-                    return false;
-                }).filter(Boolean);
-                deviceList = deviceList.filter((item) => {
-                    return showDevice.includes(item.deviceType)
-                });
-            }
-            // 更新除了井上设备的设备列表
-            state.newDevices = deviceList;
         },
 
         setMonitorEventNum(state, data) {
@@ -187,7 +189,9 @@ const moduleDevice = {
         // 更新除了井上设备的值
         async updateNewDeviceStatus({commit, rootState}) {
             const userId = rootState.user.userId;
-            const {
+
+            // 获取全部事件列表 (顶部的事件数据)
+            let {
                 success,
                 chezaizhengchang,
                 chezaiguzhang,
@@ -203,11 +207,20 @@ const moduleDevice = {
                 lichengzhuangbaojing,
                 detail,
             } = await getEventById({id: userId});
-            if (!success) {
+
+            const { code, data } = await getDeviceInfos({
+                enterpriseUuid: rootState.user.enterpriseUuid,
+                distinguish: 'DEVICE_ALL'
+            })
+
+            if (code != '200') {
                 return;
             }
+
+            console.log("新接口 =====> ", data)
             const formatDeviceList = [];
-            const pageType = rootState.device.filterType[0];
+            const pageType = rootState.device.filterType[0]; // 当前页面
+
             detail.forEach((item) => {
                 const {
                     type: deviceType,
@@ -218,6 +231,7 @@ const moduleDevice = {
                     id,
                 } = item;
 
+                // 点击 overLay 的数据展示（三种类型，在不同的页面展示不同的类型）
                 let fieldList = default_field(item);
                 if ([pageType, item.type].includes(PageTypeEnum.OPEN)) {
                     fieldList = open_field(item);
@@ -225,12 +239,16 @@ const moduleDevice = {
                 if ([pageType, item.type].includes(PageTypeEnum.HAND)) {
                     fieldList = hand_field(item);
                 }
+
+                // 浓度数据的处理
                 fieldList.forEach((item) => {
                    if (item.name === '浓度') {
                        const currentUnit = this.getters["configs/unitInfo"];
                        item.value =`${currentUnit.transform(item.value).value}${currentUnit.text}`;
                    }
                 });
+
+                // 装载数据
                 formatDeviceList.push({
                     fault: item.fault,
                     name: deviceName,
@@ -241,7 +259,9 @@ const moduleDevice = {
                     id,
                 });
             });
-            commit('setNewDeviceStatus', formatDeviceList);
+            // commit('setNewDeviceStatus', formatDeviceList); // 设置设备位置数据
+
+            // 设置顶部报警数据
             commit('setMonitorEventNum', {
                 chezaizhengchang,
                 chezaiguzhang,
@@ -258,9 +278,9 @@ const moduleDevice = {
             });
         },
         // 设置井下设备位置信息
-        updateDeviceStatus({ rootState, context }) {
+        updateDeviceStatus({ rootState, commit }) {
             fetchAllMapDevice({
-                distinguish: rootState.user.data.distinguish,
+                distinguish: 'DEVICE_ALL',
                 enterpriseUuid: rootState.user.enterpriseUuid
             }).then(res => {
                 // console.log(res)
@@ -304,17 +324,29 @@ const moduleDevice = {
                         ].filter(Boolean);
 
                         // 井下设备格式化
+                        // formatDeviceList.push({
+                        //     fault: value.fault,
+                        //     name: value.nickname  || '未知',
+                        //     fieldList,
+                        //     deviceType: DOWNHOLE,
+                        //     status: deviceStatus,
+                        //     position: [lng, lat],
+                        //     id: value.uuid
+                        // })
+
+                        // 装载数据
                         formatDeviceList.push({
                             fault: value.fault,
                             name: value.nickname  || '未知',
                             fieldList,
-                            deviceType: DOWNHOLE,
+                            deviceType: "车载",
                             status: deviceStatus,
-                            position: [lng, lat],
-                            id: value.uuid
-                        })
+                            position: [lng+'', lat+''],
+                            id: value.uuid,
+                        });
                     });
-                    context.commit('updateDeviceStatus', formatDeviceList);
+                    // context.commit('updateDeviceStatus', formatDeviceList);
+                    commit('setNewDeviceStatus', formatDeviceList); // 设置设备位置数据
                 }
             })
         },
@@ -380,6 +412,7 @@ const moduleDevice = {
                 }
             })
         },
+        // 设置页面类型
         updateFilterType(context, filterTypes) {
             context.commit('updateFilterType', filterTypes);
         },

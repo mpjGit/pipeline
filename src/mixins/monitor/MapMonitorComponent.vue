@@ -230,7 +230,7 @@
 
 <script>
 import calculateDevices from "@/mixins/monitor/calcMonitorDevices";
-import updateDeviceSignOnMap from "@/mixins/monitor/updateMonitorDeviceSignOnMap";
+import updateDeviceSignOnMap from "@/mixins/monitor/updateMonitorDeviceSignOnMap"; // 更新地图上的点
 import NewNotificationBlock from "@/components/map/NewNotificationBlock.vue";
 import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";

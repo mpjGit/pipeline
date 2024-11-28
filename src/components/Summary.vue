@@ -25,6 +25,24 @@
         <div class="amount">{{error_count}}</div>
       </div>
 
+      <div class="sub-status-wrap">
+        <div class="status warn"></div>
+        <div class="status-text">电压</div>
+        <div class="amount">{{normal_count}}</div>
+      </div>
+
+      <div class="sub-status-wrap">
+        <div class="status warn"></div>
+        <div class="status-text">信号</div>
+        <div class="amount">{{warn_count}}</div>
+      </div>
+
+      <div class="sub-status-wrap">
+        <div class="status offline"></div>
+        <div class="status-text">离线</div>
+        <div class="amount">{{error_count}}</div>
+      </div>
+
 
     </div>
   </div>
@@ -59,7 +77,8 @@ export default {
   computed: {
     formatTitle: function() {
       const titles = {
-        'invehicle': '车载设备',
+        'jxCount': '井下设备',
+        'czCount': '车载设备',
         'downhole': '无线智能终端',
         [PageTypeEnum.OPEN]: '开路设备',
         [PageTypeEnum.HAND]: '手持设备',
@@ -102,6 +121,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
     .sub-status-wrap {
       display: flex;
       flex-direction: row;
@@ -129,6 +149,11 @@ export default {
         &.error {
           background-color: rgba(250, 81, 81, 1);
           border-color: rgba(193, 33, 33, 1);
+        }
+
+        &.offline {
+          background-color: #ccc;
+          border-color: #ddd;
         }
       }
       .status-text {

@@ -223,10 +223,8 @@ const DOWNLOAD_TYPE = {
 }
 
 /** 基础地图设备标点函数 */
-function BasicMarker({
-                         center, title, iconText, fieldList, deviceStatus = NORMAL, trackPoint, onclick, id,//显示编号
-                         video
-                     }) {
+function BasicMarker({center, title, iconText, fieldList, deviceStatus = NORMAL, trackPoint, onclick, id,//显示编号
+video}) {
     this._div = null;
     this._textMarker = null;
     this._infoWindow = null;
@@ -515,7 +513,6 @@ BasicMarker.prototype.showTextMarker = function () {
 
 BasicMarker.prototype.showInfoWindow = function () {
     if (this._infoWindow) {
-        console.log('this._infoWindow', this._infoWindow)
         this._map.addOverlay(this._infoWindow);
     } else {
         let infoWindow = new BasicInfoWindow(this._center, this._title, this._fieldList, this._deviceStatus, () => {
@@ -602,7 +599,8 @@ BasicInfoWindow.prototype.initialize = function (map) {
     div.style.height = '140px';
     div.style.borderRadius = '5px';
     div.style.boxShadow = '0 0 3px rbga(0,0,0,0.3)';
-    div.style.backgroundImage = "url(/sense/assets/map/popup.png)";
+    // div.style.backgroundImage = "url(/sense/assets/map/popup.png)";
+    div.style.backgroundImage = "url(/assets/map/popup.png)";
     div.style.padding = '28px';
     div.style.boxSizing = 'border-box';
     div.style.backgroundSize = '502px 140px';
@@ -611,7 +609,8 @@ BasicInfoWindow.prototype.initialize = function (map) {
     let closeIcon = document.createElement('div');
     closeIcon.style.width = '15px';
     closeIcon.style.height = '15px';
-    closeIcon.style.backgroundImage = "url(/sense/assets/map/close.svg)";
+    // closeIcon.style.backgroundImage = "url(/sense/assets/map/close.svg)";
+    closeIcon.style.backgroundImage = "url(/assets/map/close.svg)";
     closeIcon.style.backgroundSize = "80%";
     closeIcon.style.backgroundPosition = 'center';
     closeIcon.style.backgroundRepeat = 'no-repeat';

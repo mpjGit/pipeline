@@ -301,7 +301,7 @@ const moduleNotification = {
         },
 
         refreshWarnList: function (context) {
-            const page = context.rootState.device.filterType[0];
+            const page = context.rootState.device.filterType[0]; // 页面类型
             const req = {};
             if (page === PageTypeEnum.MILEAGE) {
                 req.deviceType = 'mileage';

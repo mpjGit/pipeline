@@ -2,7 +2,7 @@ const calcMonitorDevices = {
     computed: {
         // 所有设备
         devices: function () {
-            return [].concat(this.$store.state.device.newDevices.filter(o => true));
+            return [].concat(this.$store.state.device.newDevices.filter(() => true));
         },
         filterType: function () {
             return this.$store.state.device.filterType;

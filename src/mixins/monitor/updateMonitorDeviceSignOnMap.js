@@ -62,6 +62,7 @@ const updateDeviceSignOnMap = {
         // 更新所有设备状态
         drawDeviceStatus: function() {
             this.devices.map((value) => {
+                console.log("设备item =====》 ", value)
                 const point = new BMapGL.Point(value.position[0], value.position[1]);
                 const {
                     deviceType,

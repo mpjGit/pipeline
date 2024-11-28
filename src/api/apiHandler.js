@@ -35,9 +35,14 @@ export const handleJXAlarm = (params) => {
     return post(`/c/corp-device-jx-alarms/update-alarm-record/`, {...params})
 }
 
-// 获取所有设备（地图点位）
+// 获取所有设备（地图点位）(新)
 export const fetchAllMapDevice = (data) => {
-    return post(`/q/all-device-infos/get-all-devices/${data.enterpriseUuid}/${data.distinguish}`)
+    return get(`/q/all-device-infos/get-all-devices/${data.enterpriseUuid}/${data.distinguish}`)
+}
+
+// 获取顶部设备卡片数据
+export const getDeviceInfos = (data) => {
+    return get(`/q/all-device-infos/get-all-count/${data.enterpriseUuid}/${data.distinguish}`)
 }
 
 // 获取开路设备列表
