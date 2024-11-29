@@ -116,9 +116,11 @@ Vue.mixin({
                 deviceStatus: value.deviceStatus || NORMAL,
 
             });
+            console.log(value);
             // 将设备标点增加到地图上
-            console.log("marker ====> ", marker)
-            map.addOverlay(marker);
+            setTimeout(() => {
+                map.addOverlay(marker);
+            })
             // 返回数据、及部分操作函数
             return {
                 remove: () => {

@@ -1,44 +1,11 @@
 <template>
   <div>
-    <!-- 右侧报警的导航栏 -->
-    <!-- <div class="nav-tab" id="notiNavTab">
-      <div
-        v-for="item in getShowRoutes"
-        :key="item.name"
-        @click="
-          () => {
-            curNavType = item.type.slice(0, 2);
-          }
-        "
-        :class="[
-          'nav-tab-item',
-          { 'nav-tab-item-active': curNavType === item.type.slice(0, 2) },
-        ]"
-      >
-        {{ getPaneLabel(item.type.slice(0, 2)) }}
+    <!-- 按钮信息 -->
+    <div class="notification-block">
+      <div class="button" v-on:click="showAlarm = !showAlarm">
+        <img src="@/assets/img/notification.svg"/>
       </div>
-    </div> -->
-
-    <!-- 通知信息 -->
-    <NewNotificationBlock
-      ref="sonsson"
-      v-if="
-        notificationTab !== PageTypeEnum.DOWNHOLE &&
-        notificationTab !== PageTypeEnum.MILEAGE
-      "
-      class="notification-container"
-      :inFullScreen="isFullScreen"
-      :type="filterType"
-    />
-
-    <!-- <down-hole-notification-block
-      v-else
-      class="notification-container"
-      :inFullScreen="isFullScreen"
-      :type="filterType"
-    /> -->
-
-    <!-- 通知信息提示 -->
+    </div>
 
     <!-- 统计信息 -->
     <div class="summary-wrap" v-bind:class="{ avoidNav: avoidNav }">
@@ -50,6 +17,9 @@
         :warn_count="summary.warn_count"
         :error_count="summary.error_count"
         :normal_count="summary.normal_count"
+        :deviceBattery="summary.deviceBattery"
+        :deviceSignal="summary.deviceSignal"
+        :deviceElectricity="summary.deviceElectricity"
       />
     </div>
 
@@ -99,11 +69,6 @@
               @click.native="handleClickDevice(item)"
             >
               <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
-                <template slot="extra">
-                  <el-button size="small" @click.stop="showDetail(item)">
-                    详细信息
-                  </el-button>
-                </template>
                 <el-descriptions-item label="信号强度">{{
                   item.signalStrength
                 }}</el-descriptions-item>
@@ -156,27 +121,16 @@
     </div>
 
     <!-- 右侧报警列表 -->
-    <div :class="['alarm-list', alarmMore ? 'more-list' : '']">
+    <div :class="['alarm-list', alarmMore ? 'more-list' : '', showAlarm ? 'show' : 'hide']">
       <div class="list-title">
         <span>报警列表</span>
         <el-button :type="allVoice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" class="voice-btn" size="small" @click.stop="setAllVoice()">
-          {{ allVoice === 'ALARM_VOICE_TRUE' ? '全部静音' : '全部报警'}}
+          {{ allVoice === 'ALARM_VOICE_TRUE' ? '全部消音' : '全部报警'}}
         </el-button>
       </div>
 
-      <el-tabs
-        v-model="activeAlarmTab"
-        type="border-card"
-        class="lists"
-        @tab-click="setActiveAlarmTab"
-      >
-        <el-tab-pane
-          v-for="item in tabData"
-          :key="item.distinguish"
-          :label="deviceType_toStr(item.distinguish)"
-          :name="item.distinguish"
-        >
-          <div class="ls-content">
+      <div class="lists">
+        <div class="ls-content">
             <el-card
               v-for="item in alarmList"
               :key="item.uuid"
@@ -187,14 +141,14 @@
               <el-descriptions :title="`${item.name}(${item.count})`" :column="2">
                 <template slot="extra">
                   <el-button :type="item.voice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" size="small" @click.stop="setVoice(item)">
-                    {{ item.voice === 'ALARM_VOICE_TRUE' ? '静音' : '报警'}}
+                    {{ item.voice === 'ALARM_VOICE_TRUE' ? '消音' : '取消静音'}}
                   </el-button>
                   <el-button size="small" @click.stop="solveItem(item)">
                     处理
                   </el-button>
                 </template>
                 <el-descriptions-item label="设备">{{
-                  item.distinguish
+                  deviceType_toStr(item.distinguish)
                 }}</el-descriptions-item>
                 <el-descriptions-item label="报警码">{{
                   item.alarmCode
@@ -203,13 +157,12 @@
                   item.density
                 }}</el-descriptions-item>
                 <el-descriptions-item label="报警时间" span="2">{{
-                  item.alarmTime
+                  item.alarmTime || ''
                 }}</el-descriptions-item>
               </el-descriptions>
             </el-card>
           </div>
-        </el-tab-pane>
-      </el-tabs>
+      </div>
 
       <!-- 收起按钮-->
       <div class="expand-left-button" v-on:click="alarmMore = !alarmMore">
@@ -224,6 +177,11 @@
           src="@/assets/img/nav_hide.svg"
         />
       </div>
+
+      <!-- 定位 -->
+       <div class="position">
+          <img class="positon-icon" src="@/assets/img/location.png" @click.stop="resetPositon" alt="">
+       </div>
     </div>
   </div>
 </template>
@@ -231,18 +189,16 @@
 <script>
 import calculateDevices from "@/mixins/monitor/calcMonitorDevices";
 import updateDeviceSignOnMap from "@/mixins/monitor/updateMonitorDeviceSignOnMap"; // 更新地图上的点
-import NewNotificationBlock from "@/components/map/NewNotificationBlock.vue";
 import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
 import { deviceType_toStr } from "@/utils/tool";
 import { mapActions } from "vuex";
-import { getDeviceJXList, getDevAlarmList, setVoiceStatus, JXDeviceDetail } from "@/api/apiHandler";
+import { getDeviceJXList, getDevAlarmList, setVoiceStatus, JXDeviceDetail, getDeviceInfos } from "@/api/apiHandler";
 
 export default {
   name: "MapNewComponent.vue",
   components: {
     SummaryBlock: summary,
-    NewNotificationBlock,
   },
   props: {
     avoidNav: Boolean,
@@ -260,6 +216,7 @@ export default {
       activeTab: "",
       activeAlarmTab: "",
       enterpriseUuid: "",
+      showAlarm: true,
       formData: {
         enterpriseUuid: "",
         pageNum: 1,
@@ -280,7 +237,7 @@ export default {
       searchLoading: false,
       alarmMore: false,
       isSetVoice: false,
-      allVoice: 'ALARM_VOICE_FALSE'
+      allVoice: 'ALARM_VOICE_TRUE'
     };
   },
   created: async function () {
@@ -307,11 +264,41 @@ export default {
     showMore(val) {
       if (val) {
         this.formData.pageSize = 15
+        if (this.alarmMore) {
+          this.alarmMore = false;
+        }
       } else {
         this.formData.pageSize = 5
       }
       this.formData.pageNum = 1;
       this.onSearch();
+    },
+    alarmMore(val) {
+      if (val && this.showMore) {
+        this.showMore = false;
+      }
+    },
+    tabData(val) {
+      if (val && val.length) {
+        getDeviceInfos({
+          distinguish: 'DEVICE_ALL',
+          enterpriseUuid: this.formData.enterpriseUuid
+        }).then((res) => {
+          const {code, data} = res;
+          if (code == '200') {
+            this.setSummryList(data);
+          }
+        })
+      }
+    },
+    alarmList(val) {
+      this.setWarnMuteList(val);
+    },
+    allVoice(val) {
+      for (const item of this.alarmList) {
+        item.voice = val;
+      }
+      this.alarmList = [...this.alarmList];
     }
   },
   computed: {
@@ -325,9 +312,8 @@ export default {
     },
     monitorSummaryList() {
       return []
-        .concat(this.downHoleSummaryList)
         .concat(this.summaryList)
-        .filter((item) => item.total !== 0);
+        .filter((item) => !!item.title);
     },
     allDevices() {
       return [...this.devices, ...this.downHoleDevices, ...this.mileageDevices];
@@ -350,6 +336,13 @@ export default {
     },
     deviceType_toStr(type) {
       return deviceType_toStr(type);
+    },
+    resetPositon() {
+      const map = this.getMap();
+      const userData = this.$store.state.user.data;
+      const { lon, lat } = userData;
+      var point = new BMapGL.Point(Number(lon), Number(lat));
+      map.centerAndZoom(point, 16);
     },
     // 滚动操作
     handleScroll(e) {
@@ -453,14 +446,22 @@ export default {
         voiceStatus: voice
       })
     },
+    setWarnMuteList(lists) {
+      const muteList = [];
+      for (const item of lists) {
+        if (item && item.voice === 'ALARM_VOICE_TRUE') {
+          muteList.push(item);
+        }
+      }
+      this.$store.commit('notification/muteWarnList', muteList);
+    },
     async solveItem(item) {
-
-      console.log("dataItem ===> ", item);
-
       // statusType用于兼容开路设备
       const { status = '报警', statusType = ERROR } = item;
+      this.$store.commit('notification/setIndexAlarm', item);
       let resInfo = null;
       if (status === '报警' || statusType === ERROR) {
+        // 拿到设备详情
         resInfo = await JXDeviceDetail({uuid: item.uuid})
       }
       if (resInfo.code === 200) {
@@ -476,14 +477,6 @@ export default {
       } else {
         this.allVoice = 'ALARM_VOICE_TRUE'
       }
-      this.alarmList.forEach(item => {
-        if (item.voice === 'ALARM_VOICE_TRUE') {
-          item.voice = 'ALARM_VOICE_FALSE'
-        } else {
-          item.voice = 'ALARM_VOICE_TRUE'
-        }
-      })
-      this.alarmList = [...this.alarmList]
     },
     createFilter(queryString) {
       return (deviceList) => {
@@ -532,6 +525,34 @@ export default {
 
 <style scoped lang="less">
 @import "../../styles/common";
+
+.notification-block {
+  pointer-events: visible;
+  position: absolute;
+  z-index: 24;
+
+  top: @padding;
+  right: @padding;
+
+  .button {
+    cursor: pointer;
+    width: @navButtonSize;
+    height: @navButtonSize;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 0.24rem;
+      height: 0.24rem;
+      object-position: center;
+      object-fit: contain;
+    }
+  }
+}
 
 .nav-tab {
   z-index: 22;
@@ -629,8 +650,12 @@ export default {
     .summary-wrap {
       padding-left: @padding !important;
       display: grid;
-      grid-template-columns: repeat(1, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      width: fit-content;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(1, 1fr);
+      grid-column-gap: 0.2rem;
+      grid-row-gap: 0.2rem;
+      transition: all 0.5s;
     }
   }
 
@@ -647,7 +672,7 @@ export default {
     padding: @padding;
     display: grid;
     width: fit-content;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-column-gap: 0.2rem;
     grid-row-gap: 0.2rem;
     transition: all 0.5s;
@@ -712,6 +737,23 @@ export default {
     .el-card__body, .el-main {
       padding: 10px;
     }
+    .el-tabs--border-card {
+      background-color: transparent;
+      border: none;
+    }
+    .el-card__body {
+      background: #222A3644;
+      border: none;
+      .el-descriptions__title {
+        color: #FFF;
+      }
+      .el-descriptions__body {
+        background-color: transparent;
+        .el-descriptions__table .el-descriptions-item__cell {
+          color: #FFF;
+        }
+      }
+    }
   }
 
   .lists {
@@ -727,10 +769,12 @@ export default {
       flex-wrap: wrap;
       gap: 8px;
       height: auto;
-      padding-left: 24px;
       .item-card {
-        width: 3rem;
+        cursor: pointer;
+        width: 4rem;
         height: 2.2rem;
+        background-color: transparent;
+        border: none
       }
     }
     .loading-card {
@@ -784,13 +828,42 @@ export default {
   border-radius: 0.16rem 0.16rem 0.16rem 0.16rem;
   position: absolute;
   right: 25px;
-  top: 185px;
+  top: 140px;
   font-size: 0.2rem;
   padding: 0.3rem 0.22rem;
-  transition: width 1s ease-in-out, transform .5s ease-in-out;
+  transition: width 1s ease-in-out, transform .5s ease-in-out, right .5s ease-in-out;
 
   &.more-list {
     width: 10rem;
+  }
+
+  &.hide {
+    right: -5rem;
+  }
+
+  ::v-deep {
+    .el-tabs--border-card {
+      background-color: transparent;
+      border: none;
+    }
+    .el-card {
+      border: none;
+      background-color: transparent;
+      .el-card__body {
+        height: 100%;
+        border: none;
+        background: #222A3644;
+        .el-descriptions__title {
+          color: #FFF;
+        }
+        .el-descriptions__body {
+          background-color: transparent;
+          .el-descriptions__table .el-descriptions-item__cell {
+            color: #FFF;
+          }
+        }
+      }
+    }
   }
 
   .list-title {
@@ -858,6 +931,23 @@ export default {
       background-color: rgba(42, 54, 68, 0.5);
       box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
     }
+  }
+}
+
+.position {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 174px;
+  right: 26px;
+  background: #222A3644;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .positon-icon {
+    width: 18px;
+    height: 18px;
   }
 }
 </style>

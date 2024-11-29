@@ -181,10 +181,10 @@ export default {
     const onceLocationMap = once(this.locationMap);
     this.$bus.$on('locationMap', onceLocationMap);
     this.$bus.$on('initMapLocation', this.locationMap);
-    this.$once('hook:beforeDestory',()=>{
-      this.$bus.$off('locationMap', onceLocationMap);
-      this.$bus.$off('initMapLocation', this.locationMap);
-    })
+    // this.$once('hook:beforeDestory',()=>{
+    //   this.$bus.$off('locationMap', onceLocationMap);
+    //   this.$bus.$off('initMapLocation', this.locationMap);
+    // })
     this.$bus.$on('showTrackView', this.showTrackView);
     this.$store.dispatch('updateDeviceShowProper');
     const refreshTrackViewTop = debounce(this.refreshTrackViewTop, 50);
@@ -208,9 +208,13 @@ export default {
       return deviceType_toStr(type);
     },
     locationMap({ longitude,latitude } = {}) {
+      const userData = this.$store.state.user.data;
+      const { lon, lat } = userData;
       if (!longitude || !latitude) {
         console.error('请传递正确的坐标值')
       }
+      longitude = lon;
+      latitude = lat;
       let map = this.getMap();
       var point = new BMapGL.Point(Number(longitude || 114.064338), Number(latitude || 22.535676));
       map.centerAndZoom(point, 8);

@@ -171,7 +171,7 @@ export default {
       }
     },
     shouldPlay: function () {
-      return this.$store.getters["notification/shouldPlayAlert"];
+      return this.$store.getters["notification/shouldPlayNew"];
     },
     currentUnit:  function () {
       return this.$store.getters["configs/unitInfo"];

@@ -38,8 +38,15 @@ const moduleNotification = {
 
             // 报警静音数组
             warnMuteList: [],
+
+            // 报警静音数组（新）
+            warnNewList: [],
+
             // 错误静音数组
             faultMuteList: [],
+
+            // 当前正在处理的告警
+            indexSolveAlarm: null,
 
 
 
@@ -91,6 +98,9 @@ const moduleNotification = {
             // let needAlarmArray_2 = currentFaultListId.filter(o => state.faultMuteList.indexOf(o) < 0);
             //
             // return needAlarmArray.length > 0 || needAlarmArray_2.length > 0;
+        },
+        shouldPlayNew: function(state) {
+            return !!state.warnNewList.length;
         }
     },
     mutations: {
@@ -163,7 +173,13 @@ const moduleNotification = {
             const mapWarnList = warnList.map(warn => formatWarnFlag(warn, deviceType));
             state.faultMuteList = Array.from(new Set([...mapFaultList, ...state.faultMuteList]))
             state.warnMuteList = Array.from(new Set([...mapWarnList, ...state.warnMuteList]))
-        }
+        },
+        muteWarnList: function(state, list) {
+            state.warnNewList = list;
+        },
+        setIndexAlarm(state, data) {
+            state.indexSolveAlarm = data;
+        },
     },
 
     actions: {

@@ -28,19 +28,19 @@
       <div class="sub-status-wrap">
         <div class="status warn"></div>
         <div class="status-text">电压</div>
-        <div class="amount">{{normal_count}}</div>
+        <div class="amount">{{ deviceBattery }}</div>
       </div>
 
       <div class="sub-status-wrap">
         <div class="status warn"></div>
         <div class="status-text">信号</div>
-        <div class="amount">{{warn_count}}</div>
+        <div class="amount">{{ deviceSignal }}</div>
       </div>
 
       <div class="sub-status-wrap">
         <div class="status offline"></div>
         <div class="status-text">离线</div>
-        <div class="amount">{{error_count}}</div>
+        <div class="amount">{{ deviceElectricity }}</div>
       </div>
 
 
@@ -72,16 +72,30 @@ export default {
     error_count: {
       type: Number,
       default: 0
-    }
+    },
+    deviceBattery: {
+      type: Number,
+      default: 0
+    },
+    deviceSignal: {
+      type: Number,
+      default: 0
+    },
+    deviceElectricity: {
+      type: Number,
+      default: 0
+    },
   },
   computed: {
     formatTitle: function() {
       const titles = {
         'jxCount': '井下设备',
         'czCount': '车载设备',
-        'downhole': '无线智能终端',
+        'wxzsCount': '无线智能终端(桩)',
+        'dsCount': '点式设备',
+        'wxCount': '无线智能终端',
         [PageTypeEnum.OPEN]: '开路设备',
-        [PageTypeEnum.HAND]: '手持设备',
+        'scCount': '手持设备',
         [PageTypeEnum.INVEHICLE]: '车载设备',
         [PageTypeEnum.MILEAGE]: '无线智能终端（桩式）',
       };
@@ -166,7 +180,8 @@ export default {
   }
 
   &.fullscreen {
-    width: auto;
+    width: 2.2rem;
+    height: auto;
     background-color: transparent;
     text-shadow: 0 0 0.05rem rgba(0,0,0,0.6);
     .main-wrap {

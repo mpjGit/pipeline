@@ -1,8 +1,8 @@
 import {request} from "@/utils/http";
 import {getEventById, getDeviceShowProper, fetchAllMapDevice, getDeviceInfos} from "@/api/apiHandler";
-import {isWarnMsg, isFaultMsg, isMileageWarnMsg, isMileageFaultMsg} from "@/utils/tool";
-import EventBus from "@/utils/eventBus";
-import Login from "@/pages/Login.vue";
+import {isMileageWarnMsg, isMileageFaultMsg, deviceType_toStr} from "@/utils/tool";
+// import EventBus from "@/utils/eventBus";
+// import Login from "@/pages/Login.vue";
 
 
 const default_field = ({concentration, speed, wendu}) => [
@@ -115,18 +115,18 @@ const moduleDevice = {
 
         // 设置设备 （新）
         setNewDeviceStatus(state, deviceList) {
-            const page = state.filterType[0];
-            if (page === PageTypeEnum.MONITOR) {
-                const showDevice = this.state.user.routes.map((item) => {
-                    if (item.show) {
-                        return item.type;
-                    }
-                    return false;
-                }).filter(Boolean);
-                deviceList = deviceList.filter((item) => {
-                    return showDevice.includes(item.deviceType)
-                });
-            }
+            // const page = state.filterType[0];
+            // if (page === PageTypeEnum.MONITOR) {
+            //     const showDevice = this.state.user.routes.map((item) => {
+            //         if (item.show) {
+            //             return item.type;
+            //         }
+            //         return false;
+            //     }).filter(Boolean);
+            //     deviceList = deviceList.filter((item) => {
+            //         return showDevice.includes(item.deviceType)
+            //     });
+            // }
             // 更新除了井上设备的设备列表
             state.newDevices = deviceList;
         },
@@ -192,7 +192,6 @@ const moduleDevice = {
 
             // 获取全部事件列表 (顶部的事件数据)
             let {
-                success,
                 chezaizhengchang,
                 chezaiguzhang,
                 chezaibaojing,
@@ -208,7 +207,7 @@ const moduleDevice = {
                 detail,
             } = await getEventById({id: userId});
 
-            const { code, data } = await getDeviceInfos({
+            const { code } = await getDeviceInfos({
                 enterpriseUuid: rootState.user.enterpriseUuid,
                 distinguish: 'DEVICE_ALL'
             })
@@ -217,7 +216,6 @@ const moduleDevice = {
                 return;
             }
 
-            console.log("新接口 =====> ", data)
             const formatDeviceList = [];
             const pageType = rootState.device.filterType[0]; // 当前页面
 
@@ -283,7 +281,6 @@ const moduleDevice = {
                 distinguish: 'DEVICE_ALL',
                 enterpriseUuid: rootState.user.enterpriseUuid
             }).then(res => {
-                // console.log(res)
                 let formatDeviceList = [];
                 const positions = res.data || [];
                 if (Array.isArray(positions)) {
@@ -301,12 +298,24 @@ const moduleDevice = {
                         let lng = value.lon;
                         const fieldList = [
                             {
+                                name: '状态',
+                                value: '正常'
+                            },
+                            {
+                                name: '电池电压',
+                                value: '220v'
+                            },
+                            {
+                                name: '上传时间',
+                                value: '2024-06-12'
+                            },
+                            {
                                 name: '浓度',
-                                value: value.CH4 || '未知'
+                                value: '32(18 - 45)'
                             },
                             {
                                 name: '信号强度',
-                                value: value.signal || '未知'
+                                value: '112'
                             },
                             {
                                 name: '电量',
@@ -315,12 +324,13 @@ const moduleDevice = {
                             },
                             {
                                 name: '进气口压强',
-                                value: value.entrance_pressure || '未知',
+                                value: '124(115 - 150)',
                             },
                             {
                                 name: '出气口压强',
-                                value: value.exit_pressure || '未知',
-                            }
+                                value: '331(240 - 320)',
+                            },
+
                         ].filter(Boolean);
 
                         // 井下设备格式化
@@ -337,12 +347,13 @@ const moduleDevice = {
                         // 装载数据
                         formatDeviceList.push({
                             fault: value.fault,
-                            name: value.nickname  || '未知',
+                            name: `${value.name}4AMfft098`  || '未知',
                             fieldList,
-                            deviceType: "车载",
+                            deviceType: value.distinguish,
                             status: deviceStatus,
                             position: [lng+'', lat+''],
                             id: value.uuid,
+                            iconText: deviceType_toStr(value.distinguish)[0]
                         });
                     });
                     // context.commit('updateDeviceStatus', formatDeviceList);

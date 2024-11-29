@@ -32,7 +32,12 @@ export const JXDeviceDetail = (params) => {
 
 // 处理设备报警（新）
 export const handleJXAlarm = (params) => {
-    return post(`/c/corp-device-jx-alarms/update-alarm-record/`, {...params})
+    return post(`/c/corp-device-jx-alarms/update-alarm-record/${params.uuid}`)
+}
+
+// 处理当前设备的所有报警（新）
+export const handleJXAlarmAll = (params) => {
+    return post(`/c/corp-device-jx-alarms/update-alarm-record/${params.uuid}`)
 }
 
 // 获取所有设备（地图点位）(新)

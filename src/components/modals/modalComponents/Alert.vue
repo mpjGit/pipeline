@@ -114,6 +114,12 @@ export default {
           this.hideModal();
         },
         onCancel: () => {
+          this.$emit('solveItem', {
+            ...this.faultItem,
+            updateBy: this.$store.state.user.userId,
+            remarks: this.currentRemarks,
+            type: ModalActionEnum.ALERT,
+          })
           this.hideModal();
         }
       })

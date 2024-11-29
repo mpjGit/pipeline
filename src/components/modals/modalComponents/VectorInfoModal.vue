@@ -3,7 +3,7 @@
     <template v-if="visible">
       <modal-fault :faultItem="info" @processConfirm="processConfirm" @closeDialog="closeDialog"
                    v-if="faultModalShow"></modal-fault>
-      <modal-alert :faultItem="info" @processConfirm="processConfirm" @closeDialog="closeDialog"
+      <modal-alert :faultItem="info" @processConfirm="processConfirm" @closeDialog="closeDialog" @solveItem="solveItem"
                    v-if="alertModalShow"></modal-alert>
       <open-type-alert :faultItem="info" @processConfirm="processConfirm" @closeDialog="closeDialog"
                        v-if="alertOpenTypeModalShow"
@@ -66,7 +66,7 @@ import lingPai from "@/components/modals/modalComponents/lingPai.vue";
 import handleOpenDeviceInfo from "@/components/modals/modalComponents/handleOpenDeviceInfo.vue";
 import handleMillageDeviceInfo from "@/components/modals/modalComponents/handleMillageDeviceInfo.vue";
 import handleDownholeDeviceInfo from "@/components/modals/modalComponents/handleDownholeDeviceInfo.vue";
-import { handleJXAlarm } from "@/api/apiHandler";
+import { handleJXAlarm, handleJXAlarmAll } from "@/api/apiHandler";
 import EventBus from "@/utils/eventBus";
 
 export default {
@@ -143,6 +143,7 @@ export default {
     }),
     closeDialog() {
       this.visible = false;
+      this.$store.commit('notification/setIndexAlarm', null);
     },
     // 确认处理
     processConfirm(data) {
@@ -167,7 +168,9 @@ export default {
       }
       if (statusTypeMap[type] === '报警') {
         delete data.type;
-        handleJXAlarm(data).then((res) => {
+        handleJXAlarmAll({
+          uuid: data.uuid
+        }).then((res) => {
           if (res.code == '200') {
             this.toast("处理成功！");
             EventBus.$emit('refreshPage', {});
@@ -178,6 +181,19 @@ export default {
       }
       this.closeDialog();
     },
+    solveItem() {
+      const item = this.$store.state.notification.indexSolveAlarm;
+      if (item) {
+        handleJXAlarm({
+          uuid: item.uuid
+        }).then((res) => {
+          if (res.code == '200') {
+            this.toast("处理成功！");
+            EventBus.$emit('refreshPage', {});
+          }
+        });
+      }
+    }
   },
 }
 </script>

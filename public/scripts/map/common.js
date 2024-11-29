@@ -256,7 +256,7 @@ video}) {
         }
         this._fieldList = this._fieldList.filter((item) => !filterNameList.includes(item.name))
     } catch (e) {
-        // console.log(e);
+        console.log(e);
     }
     // 待补充
     /*
@@ -596,11 +596,13 @@ BasicInfoWindow.prototype.initialize = function (map) {
     let div = document.createElement('div');
     div.style.width = '502px';
     div.style.position = 'absolute';
-    div.style.height = '140px';
+    div.style.height = '155px';
     div.style.borderRadius = '5px';
     div.style.boxShadow = '0 0 3px rbga(0,0,0,0.3)';
     // div.style.backgroundImage = "url(/sense/assets/map/popup.png)";
     div.style.backgroundImage = "url(/assets/map/popup.png)";
+    div.style.backgroundSize = 'cover';
+    div.style.backgroundPosition = 'center';
     div.style.padding = '28px';
     div.style.boxSizing = 'border-box';
     div.style.backgroundSize = '502px 140px';
