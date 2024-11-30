@@ -146,7 +146,6 @@ export default {
             ...this.$store.state.device.mileageDevices,
             ...this.$store.state.device.newDevices,
           ];
-          console.log('deviceList =====> ', deviceList);
           if (this.filterType[0] !== PageTypeEnum.MONITOR) {
             deviceList = deviceList.filter(
               (item) => this.filterType.indexOf(item.deviceType) > -1

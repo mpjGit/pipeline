@@ -45,6 +45,11 @@ export const fetchAllMapDevice = (data) => {
     return get(`/q/all-device-infos/get-all-devices/${data.enterpriseUuid}/${data.distinguish}`)
 }
 
+// 获取设备详情（新）
+export const fetchDeviceDetail = (data) => {
+    return get(`/q/corp-device-jxs/find-by-uuid/${data.uuid}`)
+}
+
 // 获取顶部设备卡片数据
 export const getDeviceInfos = (data) => {
     return get(`/q/all-device-infos/get-all-count/${data.enterpriseUuid}/${data.distinguish}`)

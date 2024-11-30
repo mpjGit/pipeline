@@ -107,7 +107,7 @@ Vue.mixin({
 
         // 创建设备标点
         createIconMarker: function (value) {
-            // this.log("create icon marker: " + title);
+            console.log("地图设备 ====> ", value)
             // 初始化地图
             let map = this.getMap();
             // 创建设备标点
@@ -116,7 +116,6 @@ Vue.mixin({
                 deviceStatus: value.deviceStatus || NORMAL,
 
             });
-            console.log(value);
             // 将设备标点增加到地图上
             setTimeout(() => {
                 map.addOverlay(marker);

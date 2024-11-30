@@ -246,3 +246,32 @@ input:-ms-input-placeholder {
   /* Internet Explorer 10-11 */
   color: #fff;
 }
+
+/* 按钮样式 */
+.detail-btn {
+  width: 80px;
+  height: auto;
+  background-color: #4CAF50; /* 按钮的背景色 */
+  border: none; /* 去掉默认边框 */
+  color: white; /* 字体颜色 */
+  text-align: center; /* 文本居中 */
+  text-decoration: none; /* 去掉文本下划线 */
+  display: inline-block; /* 让按钮呈现内联块级 */
+  font-size: 14px; /* 字体大小 */
+  border-radius: 12px; /* 边角圆润 */
+  transition: background-color 0.3s, transform 0.3s; /* 添加渐变效果 */
+  cursor: pointer;
+}
+
+/* 鼠标悬停时的效果 */
+.detail-btn:hover {
+  background-color: #45a049; /* 改变背景色 */
+  transform: scale(1.1); /* 放大按钮 */
+}
+
+/* 鼠标点击时的效果 */
+.detail-btn:active {
+  background-color: #388e3c; /* 点击时的背景色 */
+  transform: scale(1.05); /* 稍微缩小按钮 */
+}
+

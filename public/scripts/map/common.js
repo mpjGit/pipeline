@@ -127,6 +127,7 @@ const ModalActionEnum = {
     UPDATE_DEVICE_JINGXIA: '修改井下设备',
     UPDATE_DEVICE_MILEAGE: '修改里程桩设备',
     LING_PAI: '输入令牌组件',
+    DEVICE_DETAIL: '设备详细信息',
 };
 
 const ModalPage = (pageType, status) => {
@@ -320,12 +321,12 @@ BasicMarker.prototype.initialize = function (map) {
     let popup = document.createElement("div");
     popup.style.position = "relative";
     popup.style.backgroundImage = "url(" + this._iconImg + ")";
-    popup.style.backgroundSize = '110%';
-    popup.style.backgroundPosition = "top";
+    popup.style.backgroundSize = 'cover';
+    popup.style.backgroundPosition = "center";
     popup.style.width = "60px";
     popup.style.height = "60px";
 
-    popup.innerText = this._iconText;
+    popup.innerText = "设";
     popup.style.color = this._color;
     popup.style.fontSize = '14px';
     popup.style.alignSelf = 'center';
@@ -515,7 +516,7 @@ BasicMarker.prototype.showInfoWindow = function () {
     if (this._infoWindow) {
         this._map.addOverlay(this._infoWindow);
     } else {
-        let infoWindow = new BasicInfoWindow(this._center, this._title, this._fieldList, this._deviceStatus, () => {
+        let infoWindow = new BasicInfoWindow(this.id, this._center, this._title, this._fieldList, this._deviceStatus, () => {
             this.showTextMarker();
             this.hideInfoWindow();
         }, this._video);
@@ -560,7 +561,8 @@ BasicMarker.prototype.draw = function () {
 window.globalCustomData = {};
 
 /** 设备信息弹窗 */
-function BasicInfoWindow(position, deviceName, fieldList, deviceStatus, onClose, video = null) {
+function BasicInfoWindow(id, position, deviceName, fieldList, deviceStatus, onClose, video = null) {
+    this.id = id;
     this._div = null;
     this._position = position;
     this._deviceName = deviceName;
@@ -603,9 +605,10 @@ BasicInfoWindow.prototype.initialize = function (map) {
     div.style.backgroundImage = "url(/assets/map/popup.png)";
     div.style.backgroundSize = 'cover';
     div.style.backgroundPosition = 'center';
+    div.style.backgroundRepeat = 'no-repeat';
     div.style.padding = '28px';
     div.style.boxSizing = 'border-box';
-    div.style.backgroundSize = '502px 140px';
+    div.style.backgroundSize = '502px 160px';
 
     // 设置关闭按钮
     let closeIcon = document.createElement('div');
@@ -650,28 +653,27 @@ BasicInfoWindow.prototype.initialize = function (map) {
     titleWrap.style.color = 'rgba(34, 34, 34, 1)';
     titleWrap.style.fontWeight = 'bold';
 
-    // 设置视频播放按钮
-    if (this._video != null) {
-        let videoButton = document.createElement('img');
-        videoButton.style.width = '20px';
-        videoButton.style.height = 'auto';
-        videoButton.style.marginLeft = '10px';
+    // 设置查看详情按钮
+    let videoButton = document.createElement('div');
+    videoButton.style.backgroundColor = '#4CAF50';
+    videoButton.style.marginLeft = '10px';
+    videoButton.innerText = '查看详情'
+    videoButton.classList.add('detail-btn');
 
-        videoButton.setAttribute('src', '/assets/video.svg')
+    videoButton.setAttribute('src', '/assets/video.svg')
 
-        videoButton.addEventListener("mousedown", () => {
-            this._timer = new Date().getTime();
+    videoButton.addEventListener("mouseup", (e) => {
+        e.stopPropagation();
+        // eslint-disable-next-line no-undef
+        $vm.$vModal({
+            info: {
+                uuid: this.id
+            },
+            type: ModalActionEnum.DEVICE_DETAIL,
         });
-        videoButton.addEventListener("mouseup", () => {
-            let current = new Date().getTime();
-            if ((current - this._timer) < EVENT_WILL_TRIGGER_IN) {
-                // eslint-disable-next-line no-undef
-                $vm.$store.dispatch('playNewVideo', this._video);
-            }
-        });
+    });
 
-        titleWrap.appendChild(videoButton);
-    }
+    titleWrap.appendChild(videoButton);
 
     div.appendChild(titleWrap);
 
@@ -761,7 +763,7 @@ BasicPoint.prototype.showInfoWindow = function () {
     if (this._infoWindow) {
         this._map.addOverlay(this._infoWindow);
     } else {
-        let infoWindow = new BasicInfoWindow(this._center, this._title, this._fieldList, this._deviceStatus, () => {
+        let infoWindow = new BasicInfoWindow(this.id, this._center, this._title, this._fieldList, this._deviceStatus, () => {
             this.hideInfoWindow();
         }, this._video);
         this._map.addOverlay(infoWindow)
