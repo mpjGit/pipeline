@@ -709,7 +709,7 @@ export default {
   transition: width 1s ease-in-out, transform .5s ease-in-out;
   
   &.morelists {
-    width: 10rem;
+    width: 8.5rem;
   }
 
   &.avoidNav {
@@ -828,13 +828,13 @@ export default {
   border-radius: 0.16rem 0.16rem 0.16rem 0.16rem;
   position: absolute;
   right: 25px;
-  top: 140px;
+  top: 200px;
   font-size: 0.2rem;
   padding: 0.3rem 0.22rem;
   transition: width 1s ease-in-out, transform .5s ease-in-out, right .5s ease-in-out;
 
   &.more-list {
-    width: 10rem;
+    width: 8.5rem;
   }
 
   &.hide {
@@ -939,8 +939,8 @@ export default {
   height: 36px;
   border-radius: 50%;
   position: fixed;
-  bottom: 174px;
-  right: 26px;
+  bottom: 36px;
+  right: 171px;
   background: #222A3644;
   display: flex;
   justify-content: center;

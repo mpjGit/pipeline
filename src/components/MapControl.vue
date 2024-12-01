@@ -70,6 +70,11 @@ export default {
   z-index: 20;
 
   .scale-functions {
+    width: 1.4rem;
+    height: auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
     .button {
       cursor: pointer;
       margin-bottom: 0.1rem;

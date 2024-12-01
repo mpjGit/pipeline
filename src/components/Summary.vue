@@ -186,11 +186,6 @@ export default {
     text-shadow: 0 0 0.05rem rgba(0,0,0,0.6);
     .main-wrap {
     }
-    .status-wrap {
-      display: grid;
-      grid-template-rows: repeat(3, 1fr);
-      grid-row-gap: 0.1rem;
-    }
   }
 }
 </style>
