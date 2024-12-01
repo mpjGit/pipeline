@@ -47,6 +47,9 @@ import AdminDeviceList from "@/components/devices/AdminDeviceList.vue";
 // const InvehicleAlertList = () => import('@/pages/InvehicleDevice/alertList.vue');
 // const InvehicleHistoryList = () => import('@/pages/InvehicleDevice/historyList.vue');
 
+const Manage = () => import('@/pages/Manage');
+const ManageDevice = () => import('@/pages/Manage/Device.vue');
+
 
 const routes = [
     {
@@ -216,7 +219,25 @@ const routes = [
                 component: MonitorCenter
             }
         ]
-
+    },
+    {
+        path: '/manage',
+        component: Manage,
+        children: [
+            {
+                path: '',
+                redirect: () => {
+                    return {
+                        path: 'device',
+                    }
+                }
+            },
+            {
+                // 设备管理
+                path: 'device',
+                component: ManageDevice
+            },
+        ]
     },
     {path: '/login', component: Login},
 ]

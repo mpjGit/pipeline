@@ -1,6 +1,6 @@
 <template>
   <main>
-    <el-popover
+    <!-- <el-popover
         placement="right"
         width="200"
         trigger="click">
@@ -11,7 +11,8 @@
         </div>
       </div>
       <el-button slot="reference" type="warning" icon="el-icon-setting" circle></el-button>
-    </el-popover>
+    </el-popover> -->
+    <el-button slot="reference" type="warning" icon="el-icon-setting" circle @click="toManage"></el-button>
   </main>
 </template>
 
@@ -32,6 +33,10 @@ export default {
 
   },
   methods: {
+    // 跳转管理平台
+    toManage() {
+      this.$router.push('/manage');
+    },
     // 是否有权限展示路由
     hasAuth(item) {
       if (item.isAdmin) {

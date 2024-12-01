@@ -73,7 +73,6 @@ const moduleUser = {
             // 设置对应的路由path
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
-                    console.log("name", deviceType_toStr(data[i].distinguish));
                     data[i].path = routes[i + 1].path;
                     data[i].en = routes[i+1].en;
                     data[i].name = deviceType_toStr(data[i].distinguish);
