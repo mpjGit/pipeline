@@ -191,7 +191,7 @@
                 item.density
               }}</el-descriptions-item>
               <el-descriptions-item label="报警时间" span="2">{{
-                item.alarmTime || ""
+                solveTime(item.alarmTime) || ""
               }}</el-descriptions-item>
             </el-descriptions>
           </el-card>
@@ -405,6 +405,10 @@ export default {
       refreshFaultList: "notification/refreshFaultList",
       refreshMonitorWarnFaultList: "notification/refreshMonitorWarnFaultList",
     }),
+    solveTime(str) {
+      const date = new Date(str);
+      return date.toLocaleDateString()
+    },
     setActiveTab(value) {
       const { paneName } = value;
       this.activeTab = paneName;

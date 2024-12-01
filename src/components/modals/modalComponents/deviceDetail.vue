@@ -3,80 +3,110 @@
   <Modal class="record-container" :on-close-trigger="closeDialog">
     <template v-slot:header>
       <div class="header-content">
-        <h3>详细信息</h3>
+        <h3>设备详情</h3>
       </div>
     </template>
     <template v-slot:body>
-      <div class="grid-value-group">
-        <ValueGroupCompact name="企业名称" :value="faultItem.enterpriseName" />
-        <ValueGroupCompact
-          name="经纬度"
-          :value="`(${Number(faultItem.lat).toFixed(2)},${Number(
-            faultItem.lon
-          ).toFixed(2)})`"
-        />
-        <ValueGroupCompact name="创建人" :value="faultItem.createBy" />
-        <ValueGroupCompact name="修改人" :value="faultItem.updateBy" />
-        <ValueGroupCompact name="IMEI" :value="faultItem.imei" />
-        <ValueGroupCompact name="ICCID" :value="faultItem.iccid" />
-        <ValueGroupCompact name="SINR" :value="faultItem.sinr" />
-        <ValueGroupCompact name="RSRP" :value="faultItem.rsrp" />
-        <ValueGroupCompact
-          name="浓度"
-          :value="`${faultItem.density}(${faultItem.densityL} ~ ${faultItem.densityH})`"
-        />
-        <ValueGroupCompact name="信号强度" :value="faultItem.signalStrength" />
-        <ValueGroupCompact name="池电压值" :value="faultItem.battery" />
-        <ValueGroupCompact name="最后上传时间" :value="faultItem.uploadTime" />
-        <ValueGroupCompact name="电池电压" :value="faultItem.battery" />
-        <ValueGroupCompact name="温度" :value="`${faultItem.temperature}℃`" />
-        <ValueGroupCompact
-          name="进气压力"
-          :value="`${faultItem.intakeMpa}(${faultItem.intakeL} ~ ${faultItem.intakeH})`"
-        />
-        <ValueGroupCompact
-          name="出气压力"
-          :value="`${faultItem.ventMpa}(${faultItem.ventL} ~ ${faultItem.ventH})`"
-        />
-        <ValueGroupCompact
-          name="采集周期（单位：分钟）"
-          :value="faultItem.collectCycle"
-        />
-        <ValueGroupCompact
-          name="上传周期（单位：分钟）"
-          :value="faultItem.uploadCycle"
-        />
-        <ValueGroupCompact name="报警码" :value="faultItem.alarmCode" />
-        <ValueGroupCompact
-          name="是否发送历史记录"
-          :value="faultItem.historyRecord == '0' ? '否' : '是'"
-        />
-        <ValueGroupCompact
-          name="液位状态"
-          :value="`${faultItem.liquidLevel === 1 ? '超限' : '正常'}`"
-        />
-        <ValueGroupCompact
-          name="门禁状态"
-          :value="`${faultItem.entranceGuard === 1 ? '异常' : '正常'}`"
-        />
-        <ValueGroupCompact
-          v-if="isCarPage"
-          name="车速"
-          :value="faultItem.nospeed"
-        />
-        <!-- <ValueGroupCompact name="设备名称" :value="faultItem.deviceName"/> -->
-        <ValueGroupCompact name="备注" :value="faultItem.remarks" />
-        <ValueGroupCompact
-          class="area-start-time"
-          name="创建时间"
-          :value="faultItem.createAt"
-        />
-        <ValueGroupCompact
-          class="area-end-time"
-          name="修改时间"
-          :value="faultItem.updateAt"
-        />
-      </div>
+      <el-tabs
+        v-model="activeTab"
+        type="border-card"
+        class="lists"
+        @tab-click="setActiveTab"
+      >
+        <el-tab-pane label="详细信息" name="detail">
+          <div class="grid-value-group">
+            <ValueGroupCompact
+              name="企业名称"
+              :value="faultItem.enterpriseName"
+            />
+            <ValueGroupCompact
+              name="经纬度"
+              :value="`(${Number(faultItem.lat).toFixed(2)},${Number(
+                faultItem.lon
+              ).toFixed(2)})`"
+            />
+            <ValueGroupCompact name="创建人" :value="faultItem.createBy" />
+            <ValueGroupCompact name="修改人" :value="faultItem.updateBy" />
+            <ValueGroupCompact name="IMEI" :value="faultItem.imei" />
+            <ValueGroupCompact name="ICCID" :value="faultItem.iccid" />
+            <ValueGroupCompact name="SINR" :value="faultItem.sinr" />
+            <ValueGroupCompact name="RSRP" :value="faultItem.rsrp" />
+            <ValueGroupCompact
+              name="浓度"
+              :value="`${faultItem.density}(${faultItem.densityL} ~ ${faultItem.densityH})`"
+            />
+            <ValueGroupCompact
+              name="信号强度"
+              :value="faultItem.signalStrength"
+            />
+            <ValueGroupCompact name="池电压值" :value="faultItem.battery" />
+            <ValueGroupCompact
+              name="最后上传时间"
+              :value="faultItem.uploadTime"
+            />
+            <ValueGroupCompact name="电池电压" :value="faultItem.battery" />
+            <ValueGroupCompact
+              name="温度"
+              :value="`${faultItem.temperature}℃`"
+            />
+            <ValueGroupCompact
+              name="进气压力"
+              :value="`${faultItem.intakeMpa}(${faultItem.intakeL} ~ ${faultItem.intakeH})`"
+            />
+            <ValueGroupCompact
+              name="出气压力"
+              :value="`${faultItem.ventMpa}(${faultItem.ventL} ~ ${faultItem.ventH})`"
+            />
+            <ValueGroupCompact
+              name="采集周期（单位：分钟）"
+              :value="faultItem.collectCycle"
+            />
+            <ValueGroupCompact
+              name="上传周期（单位：分钟）"
+              :value="faultItem.uploadCycle"
+            />
+            <ValueGroupCompact name="报警码" :value="faultItem.alarmCode" />
+            <ValueGroupCompact
+              name="是否发送历史记录"
+              :value="faultItem.historyRecord == '0' ? '否' : '是'"
+            />
+            <ValueGroupCompact
+              name="液位状态"
+              :value="`${faultItem.liquidLevel === 1 ? '超限' : '正常'}`"
+            />
+            <ValueGroupCompact
+              name="门禁状态"
+              :value="`${faultItem.entranceGuard === 1 ? '异常' : '正常'}`"
+            />
+            <ValueGroupCompact
+              v-if="isCarPage"
+              name="车速"
+              :value="faultItem.nospeed"
+            />
+            <!-- <ValueGroupCompact name="设备名称" :value="faultItem.deviceName"/> -->
+            <ValueGroupCompact name="备注" :value="faultItem.remarks" />
+            <ValueGroupCompact
+              class="area-start-time"
+              name="创建时间"
+              :value="faultItem.createAt"
+            />
+            <ValueGroupCompact
+              class="area-end-time"
+              name="修改时间"
+              :value="faultItem.updateAt"
+            />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="报警记录" name="alarm">
+          暂无数据！
+        </el-tab-pane>
+        <el-tab-pane label="警告记录" name="fault">
+          暂无数据！
+        </el-tab-pane>
+        <el-tab-pane label="历史记录" name="hist">
+          暂无数据！
+        </el-tab-pane>
+      </el-tabs>
     </template>
     <template v-slot:footer>
       <div class="button-wrap">
@@ -105,6 +135,7 @@ export default {
     return {
       selectImplementer: "",
       currentRemarks: "",
+      activeTab: "detail",
     };
   },
   computed: {},
@@ -131,6 +162,11 @@ export default {
     // 处理报警
     processAlert: function () {
       this.$emit("closeDialog");
+    },
+
+    setActiveTab(value) {
+      const { paneName } = value;
+      this.activeTab = paneName;
     },
   },
 };
