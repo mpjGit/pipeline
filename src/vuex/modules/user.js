@@ -4,6 +4,7 @@ import {getLeftSupportDevice, getUserIdByName, loginUser} from "@/api/apiHandler
 import RoutesConstant, {typeMap} from "@/vuex/constant/RoutesConstant";
 import VectorInfoModal from "@/components/modals/modalComponents/VectorInfoModal";
 import EventBus from "@/utils/eventBus";
+import { deviceType_toStr } from "@/utils/tool";
 const CryptoJS = require("crypto-js");
 
 const moduleUser = {
@@ -59,7 +60,8 @@ const moduleUser = {
                     enterpriseUuid: "",
                     path: '/deviceall',
                     sort: 2,
-                    uuid: ''
+                    uuid: '',
+                    name: '监控中心'
                 }
             ];
             const { code, data } = await getLeftSupportDevice({ enterpriseUuid: enterpriseUuid });
@@ -71,8 +73,10 @@ const moduleUser = {
             // 设置对应的路由path
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
+                    console.log("name", deviceType_toStr(data[i].distinguish));
                     data[i].path = routes[i + 1].path;
-                    data[i].en = routes
+                    data[i].en = routes[i+1].en;
+                    data[i].name = deviceType_toStr(data[i].distinguish);
                     routeData.push(data[i]);
                 }
             }

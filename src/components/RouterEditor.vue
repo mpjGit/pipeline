@@ -17,7 +17,7 @@
 
 <script>
 
-import {insertSupportDevice} from "@/api/apiHandler";
+import { insertSupportDevice } from "@/api/apiHandler";
 import { typeMap } from '@/vuex/constant/RoutesConstant.js';
 
 export default {

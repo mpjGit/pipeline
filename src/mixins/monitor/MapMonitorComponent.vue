@@ -978,7 +978,7 @@ export default {
       height: auto;
       padding-left: 8px;
       .item-card {
-        width: 4.4rem;
+        width: 4rem;
         height: 2rem;
       }
     }
