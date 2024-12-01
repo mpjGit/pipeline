@@ -14,6 +14,7 @@ let summaryMixin = {
   },
   methods: {
     setSummryList(data) {
+      const _summaryList = [];
       for (let i = 0; i < this.tabData.length; i++) {
         const tabDataItem = this.tabData[i];
         const mapKey = this.summryMap[tabDataItem.distinguish];
@@ -21,7 +22,7 @@ let summaryMixin = {
         let total = 0;
         if (summaryItem) {
           total = summaryItem.deviceJxCnt;
-          this.summaryList.push({
+          _summaryList.push({
             title: mapKey,
             total,
             warn_count: summaryItem.deviceJxNormal,
@@ -32,7 +33,7 @@ let summaryMixin = {
             deviceElectricity: summaryItem.deviceElectricity,
           });
         } else {
-          this.summaryList.push({
+          _summaryList.push({
             title: mapKey,
             total,
             warn_count: 0,
@@ -44,6 +45,7 @@ let summaryMixin = {
           });
         }
       }
+      this.summaryList = _summaryList;
     },
   },
 };

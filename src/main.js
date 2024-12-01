@@ -107,7 +107,6 @@ Vue.mixin({
 
         // 创建设备标点
         createIconMarker: function (value) {
-            console.log("地图设备 ====> ", value)
             // 初始化地图
             let map = this.getMap();
             // 创建设备标点

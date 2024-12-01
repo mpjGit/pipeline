@@ -257,7 +257,7 @@ video}) {
         }
         this._fieldList = this._fieldList.filter((item) => !filterNameList.includes(item.name))
     } catch (e) {
-        console.log(e);
+        // console.log(e);
     }
     // 待补充
     /*

@@ -3,7 +3,7 @@
     <!-- 按钮信息 -->
     <div class="notification-block">
       <div class="button" v-on:click="showAlarm = !showAlarm">
-        <img src="@/assets/img/notification.svg"/>
+        <img src="@/assets/img/notification.svg" />
       </div>
     </div>
 
@@ -24,8 +24,19 @@
     </div>
 
     <!-- 下面的查询列表 -->
-    <div :class="['search-list', showMore ? 'morelists' : '', avoidNav ? 'avoidNav' : '']">
-      <el-form :model="formData" :inline="true" class="search-form" label-width="80px">
+    <div
+      :class="[
+        'search-list',
+        showMore ? 'morelists' : '',
+        avoidNav ? 'avoidNav' : '',
+      ]"
+    >
+      <el-form
+        :model="formData"
+        :inline="true"
+        class="search-form"
+        label-width="80px"
+      >
         <el-form-item label="关键字">
           <el-input
             width="200px"
@@ -60,48 +71,54 @@
           :label="deviceType_toStr(item.distinguish)"
           :name="item.distinguish"
         >
-          <div class="ls-content">
-            <el-card
-              v-for="item in searchList"
-              :key="item.uuid"
-              shadow="always"
-              class="item-card"
-              @click.native="handleClickDevice(item)"
-            >
-              <el-descriptions :title="`${item.name}(${item.code})`" :column="2">
-                <el-descriptions-item label="信号强度">{{
-                  item.signalStrength
-                }}</el-descriptions-item>
-                <el-descriptions-item label="电池电压值">{{
-                  item.battery
-                }}</el-descriptions-item>
-                <el-descriptions-item label="浓度">{{
-                  item.density
-                }}</el-descriptions-item>
-                <el-descriptions-item label="温度">{{
-                  item.temperature
-                }}</el-descriptions-item>
-                <el-descriptions-item label="液位状态">{{
-                  item.liquidLevel === 0 ? "正常" : "超限"
-                }}</el-descriptions-item>
-                <el-descriptions-item label="门禁状态">{{
-                  item.entranceGuard === 0 ? "正常" : "异常"
-                }}</el-descriptions-item>
-                <el-descriptions-item label="进气压力">{{
-                  item.intakeMpa
-                }}</el-descriptions-item>
-                <el-descriptions-item label="出气压力">{{
-                  item.ventMpa
-                }}</el-descriptions-item>
-                <el-descriptions-item label="当前时间">{{
-                  item.uploadTime
-                }}</el-descriptions-item>
-              </el-descriptions>
-            </el-card>
+          <div v-if="item.distinguish === 'DEVICE_JX'">
+            <div class="ls-content">
+              <el-card
+                v-for="item in searchList"
+                :key="item.uuid"
+                shadow="always"
+                class="item-card"
+                @click.native="handleClickDevice(item)"
+              >
+                <el-descriptions
+                  :title="`${item.name}(${item.code})`"
+                  :column="2"
+                >
+                  <el-descriptions-item label="信号强度">{{
+                    item.signalStrength
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="电池电压值">{{
+                    item.battery
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="浓度">{{
+                    item.density
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="温度">{{
+                    item.temperature
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="液位状态">{{
+                    item.liquidLevel === 0 ? "正常" : "超限"
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="门禁状态">{{
+                    item.entranceGuard === 0 ? "正常" : "异常"
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="进气压力">{{
+                    item.intakeMpa
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="出气压力">{{
+                    item.ventMpa
+                  }}</el-descriptions-item>
+                  <el-descriptions-item label="当前时间">{{
+                    item.uploadTime
+                  }}</el-descriptions-item>
+                </el-descriptions>
+              </el-card>
+            </div>
+            <div class="loading-card" v-if="loadingShow">
+              <img class="loading" src="@/assets/img/loading.gif" />
+            </div>
           </div>
-          <div class="loading-card" v-if="loadingShow">
-            <img class="loading" src="@/assets/img/loading.gif" />
-          </div>
+          <div v-else>暂无数据！</div>
         </el-tab-pane>
       </el-tabs>
 
@@ -121,47 +138,65 @@
     </div>
 
     <!-- 右侧报警列表 -->
-    <div :class="['alarm-list', alarmMore ? 'more-list' : '', showAlarm ? 'show' : 'hide']">
+    <div
+      :class="[
+        'alarm-list',
+        alarmMore ? 'more-list' : '',
+        showAlarm ? 'show' : 'hide',
+      ]"
+    >
       <div class="list-title">
         <span>报警列表</span>
-        <el-button :type="allVoice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" class="voice-btn" size="small" @click.stop="setAllVoice()">
-          {{ allVoice === 'ALARM_VOICE_TRUE' ? '全部消音' : '全部报警'}}
+        <el-button
+          :type="allVoice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'"
+          class="voice-btn"
+          size="small"
+          @click.stop="setAllVoice()"
+        >
+          {{ allVoice === "ALARM_VOICE_TRUE" ? "全部消音" : "全部报警" }}
         </el-button>
       </div>
 
       <div class="lists">
-        <div class="ls-content">
-            <el-card
-              v-for="item in alarmList"
-              :key="item.uuid"
-              shadow="always"
-              class="item-card"
-              @click.native="handleClickAlarm(item)"
-            >
-              <el-descriptions :title="`${item.name}(${item.count})`" :column="2">
-                <template slot="extra">
-                  <el-button :type="item.voice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'" size="small" @click.stop="setVoice(item)">
-                    {{ item.voice === 'ALARM_VOICE_TRUE' ? '消音' : '取消静音'}}
-                  </el-button>
-                  <el-button size="small" @click.stop="solveItem(item)">
-                    处理
-                  </el-button>
-                </template>
-                <el-descriptions-item label="设备">{{
-                  deviceType_toStr(item.distinguish)
-                }}</el-descriptions-item>
-                <el-descriptions-item label="报警码">{{
-                  item.alarmCode
-                }}</el-descriptions-item>
-                <el-descriptions-item label="浓度（井下）" span="2">{{
-                  item.density
-                }}</el-descriptions-item>
-                <el-descriptions-item label="报警时间" span="2">{{
-                  item.alarmTime || ''
-                }}</el-descriptions-item>
-              </el-descriptions>
-            </el-card>
-          </div>
+        <div v-if="alarmList.length" class="ls-content">
+          <el-card
+            v-for="item in alarmList"
+            :key="item.uuid"
+            shadow="always"
+            class="item-card"
+            @click.native="handleClickAlarm(item)"
+          >
+            <el-descriptions :title="`${item.name}(${item.count})`" :column="2">
+              <template slot="extra">
+                <el-button
+                  :type="
+                    item.voice === 'ALARM_VOICE_TRUE' ? 'danger' : 'warning'
+                  "
+                  size="small"
+                  @click.stop="setVoice(item)"
+                >
+                  {{ item.voice === "ALARM_VOICE_TRUE" ? "消音" : "取消静音" }}
+                </el-button>
+                <el-button size="small" @click.stop="solveItem(item)">
+                  处理
+                </el-button>
+              </template>
+              <el-descriptions-item label="设备">{{
+                deviceType_toStr(item.distinguish)
+              }}</el-descriptions-item>
+              <el-descriptions-item label="报警码">{{
+                item.alarmCode
+              }}</el-descriptions-item>
+              <el-descriptions-item label="浓度（井下）" span="2">{{
+                item.density
+              }}</el-descriptions-item>
+              <el-descriptions-item label="报警时间" span="2">{{
+                item.alarmTime || ""
+              }}</el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+        </div>
+        <div v-else>暂无数据！</div>
       </div>
 
       <!-- 收起按钮-->
@@ -179,9 +214,14 @@
       </div>
 
       <!-- 定位 -->
-       <div class="position">
-          <img class="positon-icon" src="@/assets/img/location.png" @click.stop="resetPositon" alt="">
-       </div>
+      <div class="position">
+        <img
+          class="positon-icon"
+          src="@/assets/img/location.png"
+          @click.stop="resetPositon"
+          alt=""
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -193,7 +233,14 @@ import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
 import { deviceType_toStr } from "@/utils/tool";
 import { mapActions } from "vuex";
-import { getDeviceJXList, getDevAlarmList, setVoiceStatus, JXDeviceDetail, getDeviceInfos } from "@/api/apiHandler";
+import {
+  getDeviceJXList,
+  getDevAlarmList,
+  setVoiceStatus,
+  JXDeviceDetail,
+  getDeviceInfos,
+  getLeftSupportDevice,
+} from "@/api/apiHandler";
 
 export default {
   name: "MapNewComponent.vue",
@@ -218,6 +265,7 @@ export default {
       enterpriseUuid: "",
       showAlarm: true,
       formData: {
+        distinguish: "DEVICE_ALL",
         enterpriseUuid: "",
         pageNum: 1,
         pageSize: 5,
@@ -227,7 +275,7 @@ export default {
       },
       alarmForm: {
         enterpriseUuid: "",
-        distinguish: 'DEVICE_ALL'
+        distinguish: "DEVICE_ALL",
       },
       searchList: [],
       alarmList: [],
@@ -237,24 +285,57 @@ export default {
       searchLoading: false,
       alarmMore: false,
       isSetVoice: false,
-      allVoice: 'ALARM_VOICE_TRUE'
+      allVoice: "ALARM_VOICE_TRUE",
     };
   },
   created: async function () {
+    this.$store.commit("setNotificationTab", this.curNavType);
     this.formData.enterpriseUuid = this.$store.state.user.enterpriseUuid; // 获取请求必备参数
     this.alarmForm.enterpriseUuid = this.$store.state.user.enterpriseUuid; // 获取请求必备参数
-    this.$store.commit("setNotificationTab", this.curNavType);
-    const data = await this.$store.dispatch("getUserRoutes");
-    this.tabData = data;
-    this.activeTab = data[0].distinguish;
-    this.activeAlarmTab = data[0].distinguish;
-    this.onSearch(); // 先执行一次查询
-    this.getDevAlarmList(); 
   },
-  mounted: function () {
+  mounted: async function () {
     window.addEventListener("scroll", this.handleScroll, true);
   },
   watch: {
+    "$route.query.type": {
+      immediate: true,
+      handler(val) {
+        console.log(val)
+        if (this.$route.query.type) {
+          this.formData.distinguish = this.$route.query.type;
+          this.alarmForm.distinguish = this.$route.query.type;
+        }
+        getLeftSupportDevice({
+          enterpriseUuid: this.$store.state.user.enterpriseUuid,
+        }).then((res) => {
+          const { code, data } = res;
+          if (code == "200") {
+            if (this.formData.distinguish === "DEVICE_ALL") {
+              this.tabData = data;
+              this.activeTab = data[0].distinguish;
+              this.activeAlarmTab = data[0].distinguish;
+            } else {
+              const _tabData = [];
+              for (const item of data) {
+                if (item.distinguish === this.formData.distinguish) {
+                  _tabData.push(item);
+                }
+              }
+              this.tabData = _tabData;
+              this.activeTab = _tabData[0]?.distinguish;
+              this.activeAlarmTab = _tabData[0]?.distinguish;
+            }
+            if (
+              ["DEVICE_ALL", "DEVICE_JX"].indexOf(this.formData.distinguish) >
+              -1
+            ) {
+              this.onSearch(); // 先执行一次查询
+            }
+            this.getDevAlarmList();
+          }
+        });
+      },
+    },
     curNavType() {
       this.$store.commit("setNotificationTab", this.curNavType);
     },
@@ -263,12 +344,12 @@ export default {
     },
     showMore(val) {
       if (val) {
-        this.formData.pageSize = 15
+        this.formData.pageSize = 15;
         if (this.alarmMore) {
           this.alarmMore = false;
         }
       } else {
-        this.formData.pageSize = 5
+        this.formData.pageSize = 5;
       }
       this.formData.pageNum = 1;
       this.onSearch();
@@ -281,14 +362,14 @@ export default {
     tabData(val) {
       if (val && val.length) {
         getDeviceInfos({
-          distinguish: 'DEVICE_ALL',
-          enterpriseUuid: this.formData.enterpriseUuid
+          distinguish: this.formData.distinguish,
+          enterpriseUuid: this.formData.enterpriseUuid,
         }).then((res) => {
-          const {code, data} = res;
-          if (code == '200') {
+          const { code, data } = res;
+          if (code == "200") {
             this.setSummryList(data);
           }
-        })
+        });
       }
     },
     alarmList(val) {
@@ -299,7 +380,7 @@ export default {
         item.voice = val;
       }
       this.alarmList = [...this.alarmList];
-    }
+    },
   },
   computed: {
     getShowRoutes() {
@@ -311,9 +392,7 @@ export default {
       return this.$store.state.device.notificationTab;
     },
     monitorSummaryList() {
-      return []
-        .concat(this.summaryList)
-        .filter((item) => !!item.title);
+      return [].concat(this.summaryList).filter((item) => !!item.title);
     },
     allDevices() {
       return [...this.devices, ...this.downHoleDevices, ...this.mileageDevices];
@@ -361,7 +440,7 @@ export default {
     handleClickDevice(item) {
       const map = this.getMap();
       const { lon, lat } = item;
-      if ( lon && lat ) {
+      if (lon && lat) {
         var point = new BMapGL.Point(Number(lon), Number(lat));
         map.centerAndZoom(point, 20);
       } else {
@@ -373,7 +452,7 @@ export default {
     handleClickAlarm(item) {
       const map = this.getMap();
       const { lon, lat } = item;
-      if ( lon && lat ) {
+      if (lon && lat) {
         var point = new BMapGL.Point(Number(lon), Number(lat));
         map.centerAndZoom(point, 20);
       } else {
@@ -382,7 +461,7 @@ export default {
         });
       }
     },
-    getDevAlarmList: async function() {
+    getDevAlarmList: async function () {
       const res = await getDevAlarmList({
         ...this.alarmForm,
       });
@@ -432,37 +511,37 @@ export default {
       this.loadingShow = false;
     },
     setVoice(item) {
-      let { uuid, voice = 'ALARM_VOICE_FALSE' } = item;
-      if (voice === 'ALARM_VOICE_TRUE') {
-        voice = 'ALARM_VOICE_FALSE'
+      let { uuid, voice = "ALARM_VOICE_FALSE" } = item;
+      if (voice === "ALARM_VOICE_TRUE") {
+        voice = "ALARM_VOICE_FALSE";
       } else {
-        voice = 'ALARM_VOICE_TRUE'
+        voice = "ALARM_VOICE_TRUE";
       }
       item.voice = voice;
       this.alarmList = [...this.alarmList];
       setVoiceStatus({
         enterpriseUuid: this.formData.enterpriseUuid,
         uuid,
-        voiceStatus: voice
-      })
+        voiceStatus: voice,
+      });
     },
     setWarnMuteList(lists) {
       const muteList = [];
       for (const item of lists) {
-        if (item && item.voice === 'ALARM_VOICE_TRUE') {
+        if (item && item.voice === "ALARM_VOICE_TRUE") {
           muteList.push(item);
         }
       }
-      this.$store.commit('notification/muteWarnList', muteList);
+      this.$store.commit("notification/muteWarnList", muteList);
     },
     async solveItem(item) {
       // statusType用于兼容开路设备
-      const { status = '报警', statusType = ERROR } = item;
-      this.$store.commit('notification/setIndexAlarm', item);
+      const { status = "报警", statusType = ERROR } = item;
+      this.$store.commit("notification/setIndexAlarm", item);
       let resInfo = null;
-      if (status === '报警' || statusType === ERROR) {
+      if (status === "报警" || statusType === ERROR) {
         // 拿到设备详情
-        resInfo = await JXDeviceDetail({uuid: item.uuid})
+        resInfo = await JXDeviceDetail({ uuid: item.uuid });
       }
       if (resInfo.code === 200) {
         this.$vModal({
@@ -472,10 +551,10 @@ export default {
       }
     },
     setAllVoice() {
-      if (this.allVoice === 'ALARM_VOICE_TRUE') {
-        this.allVoice = 'ALARM_VOICE_FALSE';
+      if (this.allVoice === "ALARM_VOICE_TRUE") {
+        this.allVoice = "ALARM_VOICE_FALSE";
       } else {
-        this.allVoice = 'ALARM_VOICE_TRUE'
+        this.allVoice = "ALARM_VOICE_TRUE";
       }
     },
     createFilter(queryString) {
@@ -706,8 +785,8 @@ export default {
   left: 25px;
   font-size: 0.2rem;
   padding: 0.3rem 0.22rem;
-  transition: width 1s ease-in-out, transform .5s ease-in-out;
-  
+  transition: width 1s ease-in-out, transform 0.5s ease-in-out;
+
   &.morelists {
     width: 8.5rem;
   }
@@ -734,7 +813,8 @@ export default {
     .el-descriptions__header {
       margin-bottom: 10px;
     }
-    .el-card__body, .el-main {
+    .el-card__body,
+    .el-main {
       padding: 10px;
     }
     .el-tabs--border-card {
@@ -742,15 +822,15 @@ export default {
       border: none;
     }
     .el-card__body {
-      background: #222A3644;
+      background: #222a3644;
       border: none;
       .el-descriptions__title {
-        color: #FFF;
+        color: #fff;
       }
       .el-descriptions__body {
         background-color: transparent;
         .el-descriptions__table .el-descriptions-item__cell {
-          color: #FFF;
+          color: #fff;
         }
       }
     }
@@ -774,7 +854,7 @@ export default {
         width: 4rem;
         height: 2.2rem;
         background-color: transparent;
-        border: none
+        border: none;
       }
     }
     .loading-card {
@@ -831,7 +911,8 @@ export default {
   top: 200px;
   font-size: 0.2rem;
   padding: 0.3rem 0.22rem;
-  transition: width 1s ease-in-out, transform .5s ease-in-out, right .5s ease-in-out;
+  transition: width 1s ease-in-out, transform 0.5s ease-in-out,
+    right 0.5s ease-in-out;
 
   &.more-list {
     width: 8.5rem;
@@ -852,14 +933,14 @@ export default {
       .el-card__body {
         height: 100%;
         border: none;
-        background: #222A3644;
+        background: #222a3644;
         .el-descriptions__title {
-          color: #FFF;
+          color: #fff;
         }
         .el-descriptions__body {
           background-color: transparent;
           .el-descriptions__table .el-descriptions-item__cell {
-            color: #FFF;
+            color: #fff;
           }
         }
       }
@@ -903,7 +984,6 @@ export default {
     }
   }
 
-
   .expand-left-button {
     cursor: pointer;
     width: 0.4rem;
@@ -941,7 +1021,7 @@ export default {
   position: fixed;
   bottom: 36px;
   right: 171px;
-  background: #222A3644;
+  background: #222a3644;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -182,7 +182,7 @@ export default {
       }
     },
     enter: function () {
-      this.$router.replace('/monitor')
+      this.$router.replace('/deviceall')
       this.handleLoginDialog(false);
     }
   },

@@ -24,7 +24,6 @@ const moduleUser = {
             state.data = data;
         },
         setUserId(state, userId) {
-            console.log("userId ==========================================================> ", userId)
             state.enterpriseUuid = userId;
         },
         setUserRoutes(state, data) {
@@ -52,6 +51,17 @@ const moduleUser = {
             if (!enterpriseUuid) {
                 return;
             }
+            const routeData = [
+                {
+                    createAt: "2024-11-19 14:57:17",
+                    deviceUuid: "",
+                    distinguish: "DEVICE_ALL",
+                    enterpriseUuid: "",
+                    path: '/deviceall',
+                    sort: 2,
+                    uuid: ''
+                }
+            ];
             const { code, data } = await getLeftSupportDevice({ enterpriseUuid: enterpriseUuid });
             if (code !== 200) {
                 return;
@@ -61,7 +71,9 @@ const moduleUser = {
             // 设置对应的路由path
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
-                    data[i].path = routes[i + 1].path
+                    data[i].path = routes[i + 1].path;
+                    data[i].en = routes
+                    routeData.push(data[i]);
                 }
             }
             
@@ -72,7 +84,7 @@ const moduleUser = {
             //     const pageType = typeMap[key];
             //     routes.find((item) => item.type === pageType).show = detail[key];
             // });
-            return data.length ? data : [];
+            return routeData.length ? routeData : [];
         },
         login(context, {username, password}) {
             // 密码 md5 加密
