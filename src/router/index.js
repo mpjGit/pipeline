@@ -60,7 +60,7 @@ const routes = [
                 path: '',
                 redirect: () => {
                     return {
-                        path: 'monitor'
+                        path: 'deviceall'
                     }
                 }
             },
