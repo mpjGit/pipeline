@@ -28,7 +28,7 @@
       :class="[
         'search-list',
         showMore ? 'morelists' : '',
-        avoidNav ? 'avoidNav' : '',
+        (avoidNav && !isFullScreen) ? 'avoidNav' : '',
       ]"
     >
       <el-form

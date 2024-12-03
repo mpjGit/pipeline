@@ -3,6 +3,7 @@ node_modules
 /dist
 /src/assets/removeable
 /dist.zip
+/dist.rar
 
 
 # local env files
