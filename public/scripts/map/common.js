@@ -32,6 +32,19 @@ const DEVICE_TYPE = {
     DEVICE_KL: '开路设备',
 }
 
+const ALARM_TYPE = {
+    TROUBLE_CODE_FLUIDLEVELABNORMAL: '液位报警',
+    TROUBLE_CODE_MANHOLECOVERABNORMAI: '井盖报警',
+    TROUBLE_CODE_LASER_CONCENTRATION_EARLYWARNING: '浓度预警',
+    TROUBLE_CODE_LASER_CONCENTRATION_ALARM: '浓度报警',
+    TROUBLE_CODE_PTIOO_ALARM: 'PT100温度异常',
+    TROUBLE_CODE_BATTERY_LOW_ALARM: '电池电量低报警',
+    TROUBLE_CODE_PIZEOO_HIGHT_ALARM: '气压表0上限报警',
+    TROUBLE_CODE_PIZEOO_LOW_ALARM: '气压表0下限报警',
+    TROUBLE_CODE_PIZEO1_HIGHT_ALARM: '气压表1上限报警',
+    TROUBLE_CODE_PIZEOI_LOW_ALARM: '气压表1下限报警'
+}
+
 function isFaultMsg(fault) {
     return Number(fault) >= 1 && Number(fault) <= 512;
 }

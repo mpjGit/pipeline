@@ -44,3 +44,11 @@ export function fault_tostring(fault){
 export function deviceType_toStr(type) {
     return DEVICE_TYPE[type];
 }
+
+// 报警码类型转换
+export function alarmCode2type(code) {
+    if (code && typeof code === 'string') {
+        return ALARM_TYPE[code];
+    }
+    return '';
+}

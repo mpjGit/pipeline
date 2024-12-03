@@ -28,7 +28,7 @@
       :class="[
         'search-list',
         showMore ? 'morelists' : '',
-        (avoidNav && !isFullScreen) ? 'avoidNav' : '',
+        avoidNav && !isFullScreen ? 'avoidNav' : '',
       ]"
     >
       <el-form
@@ -181,16 +181,16 @@
                   处理
                 </el-button>
               </template>
-              <el-descriptions-item label="设备">{{
-                deviceType_toStr(item.distinguish)
+              <el-descriptions-item label="code" :span="2">{{
+                item.code
               }}</el-descriptions-item>
-              <el-descriptions-item label="报警码">{{
-                item.alarmCode
-              }}</el-descriptions-item>
-              <el-descriptions-item label="浓度（井下）" span="2">{{
+              <el-descriptions-item label="浓度（井下）" :span="2">{{
                 item.density
               }}</el-descriptions-item>
-              <el-descriptions-item label="报警时间" span="2">{{
+              <el-descriptions-item label="报警码" :span="2">{{
+                solveAlarmCode(item.alarmCode)
+              }}</el-descriptions-item>
+              <el-descriptions-item label="报警时间" :span="2">{{
                 solveTime(item.alarmTime) || ""
               }}</el-descriptions-item>
             </el-descriptions>
@@ -231,7 +231,7 @@ import calculateDevices from "@/mixins/monitor/calcMonitorDevices";
 import updateDeviceSignOnMap from "@/mixins/monitor/updateMonitorDeviceSignOnMap"; // 更新地图上的点
 import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
-import { deviceType_toStr } from "@/utils/tool";
+import { deviceType_toStr, alarmCode2type } from "@/utils/tool";
 import { mapActions } from "vuex";
 import {
   getDeviceJXList,
@@ -300,7 +300,7 @@ export default {
     "$route.query.type": {
       immediate: true,
       handler(val) {
-        console.log(val)
+        console.log(val);
         if (this.$route.query.type) {
           this.formData.distinguish = this.$route.query.type;
           this.alarmForm.distinguish = this.$route.query.type;
@@ -407,7 +407,21 @@ export default {
     }),
     solveTime(str) {
       const date = new Date(str);
-      return date.toLocaleDateString()
+      return date.toLocaleDateString();
+    },
+    solveAlarmCode(code) {
+      if (code && code.length) {
+        const codeArr = code.split(',');
+        const alarmArr = [];
+        for (const item of codeArr) {
+          const alarmType = alarmCode2type(item);
+          if (alarmType) {
+            alarmArr.push(alarmType)
+          }
+        }
+        return alarmArr.join(',')
+      }
+      return ""
     },
     setActiveTab(value) {
       const { paneName } = value;

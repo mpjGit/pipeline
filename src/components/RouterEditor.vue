@@ -12,7 +12,7 @@
       </div>
       <el-button slot="reference" type="warning" icon="el-icon-setting" circle></el-button>
     </el-popover> -->
-    <el-button slot="reference" type="warning" icon="el-icon-setting" circle @click="toManage"></el-button>
+    <el-button slot="reference" type="warning" @click="toManage">管理平台</el-button>
   </main>
 </template>
 
@@ -35,7 +35,9 @@ export default {
   methods: {
     // 跳转管理平台
     toManage() {
-      this.$router.push('/manage');
+      // console.log(window.location.origin + '/#/manage')
+      window.open(window.location.origin + '/#/manage', '_blank')
+      // this.$router.push('/manage');
     },
     // 是否有权限展示路由
     hasAuth(item) {

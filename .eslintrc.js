@@ -27,6 +27,7 @@ module.exports = {
     POSITION_ICON: true,
     ALL_FAULT_STATUS_MAP: true,
     DEVICE_TYPE: true,
+    ALARM_TYPE: true,
 
     MAP: "readonly",
     ALERT: "readonly",
