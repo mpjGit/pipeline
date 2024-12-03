@@ -108,7 +108,7 @@
                   <el-descriptions-item label="出气压力">{{
                     item.ventMpa
                   }}</el-descriptions-item>
-                  <el-descriptions-item label="当前时间">{{
+                  <el-descriptions-item label="最后上传时间">{{
                     item.uploadTime
                   }}</el-descriptions-item>
                 </el-descriptions>

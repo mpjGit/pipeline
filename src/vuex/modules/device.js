@@ -188,92 +188,83 @@ const moduleDevice = {
 
         // 更新除了井上设备的值
         async updateNewDeviceStatus({commit, rootState}) {
-            const userId = rootState.user.userId;
+            // const userId = rootState.user.userId;
 
-            // 获取全部事件列表 (顶部的事件数据)
-            let {
-                chezaizhengchang,
-                chezaiguzhang,
-                chezaibaojing,
-                shouchizhengchang,
-                shouchiguzhang,
-                shouchibaojing,
-                kailuzhengchang,
-                kailuguzhang,
-                kailubaojing,
-                lichengzhuangzhengchang,
-                lichengzhuangguzhang,
-                lichengzhuangbaojing,
-                detail,
-            } = await getEventById({id: userId});
+            // // 获取全部事件列表 (顶部的事件数据)
+            // let {
+            //     chezaizhengchang,
+            //     chezaiguzhang,
+            //     chezaibaojing,
+            //     shouchizhengchang,
+            //     shouchiguzhang,
+            //     shouchibaojing,
+            //     kailuzhengchang,
+            //     kailuguzhang,
+            //     kailubaojing,
+            //     lichengzhuangzhengchang,
+            //     lichengzhuangguzhang,
+            //     lichengzhuangbaojing,
+            //     detail,
+            // } = await getEventById({id: userId});
 
-            const { code } = await getDeviceInfos({
-                enterpriseUuid: rootState.user.enterpriseUuid,
-                distinguish: 'DEVICE_ALL'
-            })
+            // const formatDeviceList = [];
+            // const pageType = rootState.device.filterType[0]; // 当前页面
 
-            if (code != '200') {
-                return;
-            }
+            // detail.forEach((item) => {
+            //     const {
+            //         type: deviceType,
+            //         statusId: deviceStatus,
+            //         latitude: lat,
+            //         longitude: lng,
+            //         deviceName,
+            //         id,
+            //     } = item;
 
-            const formatDeviceList = [];
-            const pageType = rootState.device.filterType[0]; // 当前页面
+            //     // 点击 overLay 的数据展示（三种类型，在不同的页面展示不同的类型）
+            //     let fieldList = default_field(item);
+            //     if ([pageType, item.type].includes(PageTypeEnum.OPEN)) {
+            //         fieldList = open_field(item);
+            //     }
+            //     if ([pageType, item.type].includes(PageTypeEnum.HAND)) {
+            //         fieldList = hand_field(item);
+            //     }
 
-            detail.forEach((item) => {
-                const {
-                    type: deviceType,
-                    statusId: deviceStatus,
-                    latitude: lat,
-                    longitude: lng,
-                    deviceName,
-                    id,
-                } = item;
+            //     // 浓度数据的处理
+            //     fieldList.forEach((item) => {
+            //        if (item.name === '浓度') {
+            //            const currentUnit = this.getters["configs/unitInfo"];
+            //            item.value =`${currentUnit.transform(item.value).value}${currentUnit.text}`;
+            //        }
+            //     });
 
-                // 点击 overLay 的数据展示（三种类型，在不同的页面展示不同的类型）
-                let fieldList = default_field(item);
-                if ([pageType, item.type].includes(PageTypeEnum.OPEN)) {
-                    fieldList = open_field(item);
-                }
-                if ([pageType, item.type].includes(PageTypeEnum.HAND)) {
-                    fieldList = hand_field(item);
-                }
-
-                // 浓度数据的处理
-                fieldList.forEach((item) => {
-                   if (item.name === '浓度') {
-                       const currentUnit = this.getters["configs/unitInfo"];
-                       item.value =`${currentUnit.transform(item.value).value}${currentUnit.text}`;
-                   }
-                });
-
-                // 装载数据
-                formatDeviceList.push({
-                    fault: item.fault,
-                    name: deviceName,
-                    fieldList,
-                    deviceType,
-                    status: deviceStatus,
-                    position: [lng, lat],
-                    id,
-                });
-            });
+            //     // 装载数据
+            //     formatDeviceList.push({
+            //         fault: item.fault,
+            //         name: deviceName,
+            //         fieldList,
+            //         deviceType,
+            //         status: deviceStatus,
+            //         position: [lng, lat],
+            //         id,
+            //     });
+            // });
             // commit('setNewDeviceStatus', formatDeviceList); // 设置设备位置数据
 
             // 设置顶部报警数据
-            commit('setMonitorEventNum', {
-                chezaizhengchang,
-                chezaiguzhang,
-                chezaibaojing,
-                shouchizhengchang,
-                shouchiguzhang,
-                shouchibaojing,
-                kailuzhengchang,
-                kailuguzhang,
-                kailubaojing,
-                lichengzhuangzhengchang,
-                lichengzhuangguzhang,
-                lichengzhuangbaojing
-            });
+            // commit('setMonitorEventNum', {
+            //     chezaizhengchang,
+            //     chezaiguzhang,
+            //     chezaibaojing,
+            //     shouchizhengchang,
+            //     shouchiguzhang,
+            //     shouchibaojing,
+            //     kailuzhengchang,
+            //     kailuguzhang,
+            //     kailubaojing,
+            //     lichengzhuangzhengchang,
+            //     lichengzhuangguzhang,
+            //     lichengzhuangbaojing
+            // });
         },
         // 设置井下设备位置信息
         updateDeviceStatus({ rootState, commit }) {

@@ -16,6 +16,11 @@ export const getDeviceJXList = (params) => {
     return request.post_form('/q/corp-device-jxs/browse-page', {...params})
 }
 
+// 获取设备报警列表
+export const getDeviceAlarmList = (params) => {
+    return request.post_form('/q/corp-device-jx-alarms/browse-page', {...params})
+}
+
 // 获取右侧报警列表 (新)
 export const getDevAlarmList = (params) => {
     return get(`/q/all-device-infos/get-alarm-list/${params.enterpriseUuid}/${params.distinguish}`)

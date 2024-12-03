@@ -14,7 +14,8 @@ import '@/styles/ele-ui-overwrite.css';
 
 import {
     Popover, Button, DatePicker, TimePicker, Tabs, TabPane, Autocomplete, Tooltip, Switch, select, Option,
-    OptionGroup, Form, FormItem, Input, Descriptions, DescriptionsItem, Card, Row, Col, Menu, Submenu, MenuItem, MenuItemGroup
+    OptionGroup, Form, FormItem, Input, Descriptions, DescriptionsItem, Card, Row, Col, Menu, Submenu, MenuItem, MenuItemGroup,
+    Table, TableColumn, Pagination
 } from 'element-ui';
 import {cloneDeep} from "lodash-es";
 import EventBus from "@/utils/eventBus";
@@ -49,6 +50,9 @@ Vue.component(Submenu.name, Submenu);
 Vue.component(MenuItem.name, MenuItem);
 Vue.component(MenuItemGroup.name, MenuItemGroup);
 Vue.component(Card.name, Card);
+Vue.component(Table.name, Table);
+Vue.component(TableColumn.name, TableColumn);
+Vue.component(Pagination.name, Pagination);
 Vue.use(select);
 Vue.use(Option);
 Vue.use(OptionGroup);

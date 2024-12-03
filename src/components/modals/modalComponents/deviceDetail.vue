@@ -98,14 +98,50 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="报警记录" name="alarm">
-          暂无数据！
+          <!-- 查询区域 -->
+          <el-form :inline="true" :model="alarmForm" class="demo-form-inline">
+            <el-form-item label="关键字">
+              <el-input
+                v-model="alarmForm.keyword"
+                placeholder="关键字（模糊查询）"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="报警处理记录">
+              <el-select v-model="alarmForm.status" placeholder="活动区域">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="时间范围">
+              <el-date-picker
+                v-model="alarmForm.searchTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSearchAlarm">查询</el-button>
+            </el-form-item>
+          </el-form>
+          <!-- 数据展示区域 -->
+          <el-table :data="alarmData" style="width: 100%">
+            <el-table-column
+              v-for="item in alarmTableCol"
+              :key="item.prop"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            >
+            </el-table-column>
+          </el-table>
+          <el-pagination background layout="prev, pager, next" :total="alarmSearch.total" @current-change="pageNumChange($event, 'alarm')">
+          </el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="警告记录" name="fault">
-          暂无数据！
-        </el-tab-pane>
-        <el-tab-pane label="历史记录" name="hist">
-          暂无数据！
-        </el-tab-pane>
+        <el-tab-pane label="警告记录" name="fault"> 暂无数据！ </el-tab-pane>
+        <el-tab-pane label="历史记录" name="hist"> 暂无数据！ </el-tab-pane>
       </el-tabs>
     </template>
     <template v-slot:footer>
@@ -121,6 +157,7 @@ import Modal from "@/components/modals/modalComponents/Modal";
 import ValueGroupCompact from "@/components/modals/modalComponents/valueGroupCompact.vue";
 import { mapActions } from "vuex";
 import fault from "@/components/modals/modalComponents/Fault.vue";
+import { getDeviceAlarmList } from "@/api/apiHandler";
 
 export default {
   name: "modal-device-detail",
@@ -136,7 +173,62 @@ export default {
       selectImplementer: "",
       currentRemarks: "",
       activeTab: "detail",
+      enterpriseUuid: "",
+      alarmSearch: {
+        total: 20
+      },
+      alarmForm: {
+        enterpriseUuid: "",
+        keyword: "",
+        status: "",
+        searchTime: [],
+        pageSize: 10,
+        pageNum: 1,
+      },
+      alarmTableCol: [
+        {
+          prop: "deviceName",
+          label: "设备名称",
+          width: 180,
+        },
+        {
+          prop: "enterpriseName",
+          label: "企业名称",
+          width: 180,
+        },
+        {
+          prop: "createAt",
+          label: "创建时间",
+          width: 180,
+        },
+        {
+          prop: "updateAt",
+          label: "修改时间",
+          width: 180,
+        },
+        {
+          prop: "updateBy",
+          label: "操作人",
+          width: 180,
+        },
+        {
+          prop: "signalStrength",
+          label: "信号强度",
+          width: 180,
+        },
+        {
+          prop: "battery",
+          label: "电池电压值",
+          width: 180,
+        },
+      ],
+      alarmData: [],
     };
+  },
+  created() {
+    this.enterpriseUuid = this.$store.state.user.enterpriseUuid; // 获取请求必备参数
+    this.alarmForm.enterpriseUuid = this.enterpriseUuid;
+    this.onSearchAlarm();
   },
   computed: {},
   methods: {
@@ -147,6 +239,35 @@ export default {
       showModal: "showModal",
       hideModal: "hideModal",
     }),
+
+    async onSearchAlarm() {
+      const searchTime = this.alarmForm.searchTime;
+      if (searchTime && searchTime.length > 1) {
+        this.alarmForm.startTime = searchTime[0];
+        this.alarmForm.endTime = searchTime[1];
+      }
+
+      const res = await getDeviceAlarmList({
+        ...this.alarmForm,
+      });
+      const { code } = res;
+      if (code == "200") {
+        this.alarmData = res.data;
+        this.alarmForm.pageSize = res.pageSize;
+        this.alarmForm.pageNum = res.pageNum;
+        this.alarmSearch.total = res.total;
+      }
+    },
+
+    pageNumChange(pageNum, type) {
+      switch (type) {
+        case 'alarm':
+          this.alarmForm.pageNum = pageNum;
+          this.onSearchAlarm();
+          break;
+      }
+    },
+
     onImplementerChange: function ({ value }) {
       this.selectImplementer = value;
     },
