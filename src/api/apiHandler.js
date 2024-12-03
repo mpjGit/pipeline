@@ -1,4 +1,5 @@
 import { post, get } from "@/utils/axios"
+import { request } from "@/utils/http";
 
 
 export const getUserIdByName = (params) => {
@@ -12,7 +13,7 @@ export const getDeviceList = (params) => {
 
 // 获取设备列表 - 井下设备（新）
 export const getDeviceJXList = (params) => {
-    return post('/q/corp-device-jxs/browse-page', {...params})
+    return request.post_form('/q/corp-device-jxs/browse-page', {...params})
 }
 
 // 获取右侧报警列表 (新)

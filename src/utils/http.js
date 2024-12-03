@@ -29,6 +29,19 @@ export const request = {
 			return res.json()
 		})
 	},
+	post_form(url, params) {
+		const regex = /^\/(q|c)\//;
+		const reqUrl = regex.test(url) ? serverUrl_new : serverUrl;
+		return fetch(reqUrl + url, {
+			method: 'POST',
+			body: JSON.stringify(params),
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			}
+		}).then(res => {
+			return res.json()
+		})
+	},
 	get(url) {
 		const isMileage = isMileagePage();
 		const regex = /^\/(q|c)\//;
