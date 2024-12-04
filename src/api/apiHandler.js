@@ -16,9 +16,19 @@ export const getDeviceJXList = (params) => {
     return request.post_form('/q/corp-device-jxs/browse-page', {...params})
 }
 
-// 获取设备报警列表
+// 获取设备报警列表 (新)
 export const getDeviceAlarmList = (params) => {
     return request.post_form('/q/corp-device-jx-alarms/browse-page', {...params})
+}
+
+// 获取设备故障列表 （新）
+export const getDeviceWarnList = (params) => {
+    return request.post_form('/q/corp-device-jx-faults/browse-page', {...params})
+}
+
+// 获取设备历史记录列表 （新）
+export const getDeviceHistList = (params) => {
+    return request.post_form('/q/corp-device-jx-historys/browse-page', {...params})
 }
 
 // 获取右侧报警列表 (新)

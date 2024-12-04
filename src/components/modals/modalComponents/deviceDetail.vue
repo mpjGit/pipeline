@@ -108,8 +108,8 @@
             </el-form-item>
             <el-form-item label="报警处理记录">
               <el-select v-model="alarmForm.status" placeholder="活动区域">
-                <el-option label="已处理" value="shanghai"></el-option>
-                <el-option label="未处理" value="beijing"></el-option>
+                <el-option label="已处理" value="ALARM_STATUS_WCL"></el-option>
+                <el-option label="未处理" value="ALARM_STATUS_YCL"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="时间范围">
@@ -129,26 +129,133 @@
           <!-- 数据展示区域 -->
           <el-table :data="alarmData" style="width: 100%">
             <el-table-column
-              v-for="item in alarmTableCol"
-              :key="item.prop"
+              v-for="(item, index) in alarmTableCol"
+              :key="index"
               :prop="item.prop"
               :label="item.label"
               :width="item.width"
-              :formatter="(row, column, value) => {
-                if (item.render) {
-                  return item.render(row, value);
-                } else {
-                  return value;
+              :formatter="
+                (row, column, value) => {
+                  if (item.render) {
+                    return item.render(row, value);
+                  } else {
+                    return value;
+                  }
                 }
-              }"
+              "
             >
             </el-table-column>
           </el-table>
-          <el-pagination background layout="prev, pager, next" :total="alarmSearch.total" @current-change="pageNumChange($event, 'alarm')">
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="alarmSearch.total"
+            @current-change="pageNumChange($event, 'alarm')"
+          >
           </el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="警告记录" name="fault"> 暂无数据！ </el-tab-pane>
-        <el-tab-pane label="历史记录" name="hist"> 暂无数据！ </el-tab-pane>
+        <el-tab-pane label="警告记录" name="fault">
+          <!-- 查询区域 -->
+          <el-form :inline="true" :model="warnForm" class="demo-form-inline">
+            <el-form-item label="关键字">
+              <el-input
+                v-model="warnForm.keyword"
+                placeholder="关键字（模糊查询）"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="时间范围">
+              <el-date-picker
+                v-model="warnForm.searchTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSearchWarn">查询</el-button>
+            </el-form-item>
+          </el-form>
+          <!-- 数据展示区域 -->
+          <el-table :data="warnData" style="width: 100%">
+            <el-table-column
+              v-for="(item, index) in warnCol"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+              :formatter="
+                (row, column, value) => {
+                  if (item.render) {
+                    return item.render(row, value);
+                  } else {
+                    return value;
+                  }
+                }
+              "
+            >
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="warnSearch.total"
+            @current-change="pageNumChange($event, 'warn')"
+          >
+          </el-pagination>
+        </el-tab-pane>
+        <el-tab-pane label="历史记录" name="hist">
+          <!-- 查询区域 -->
+          <el-form :inline="true" :model="histForm" class="demo-form-inline">
+            <el-form-item label="关键字">
+              <el-input
+                v-model="histForm.keyword"
+                placeholder="关键字（模糊查询）"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="时间范围">
+              <el-date-picker
+                v-model="histForm.searchTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSearchHist">查询</el-button>
+            </el-form-item>
+          </el-form>
+          <!-- 数据展示区域 -->
+          <el-table :data="histData" style="width: 100%">
+            <el-table-column
+              v-for="(item, index) in histCol"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+              :formatter="
+                (row, column, value) => {
+                  if (item.render) {
+                    return item.render(row, value);
+                  } else {
+                    return value;
+                  }
+                }
+              "
+            >
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="histSearch.total"
+            @current-change="pageNumChange($event, 'hist')"
+          >
+          </el-pagination>
+        </el-tab-pane>
       </el-tabs>
     </template>
     <template v-slot:footer>
@@ -165,11 +272,14 @@ import ValueGroupCompact from "@/components/modals/modalComponents/valueGroupCom
 import { mapActions } from "vuex";
 import fault from "@/components/modals/modalComponents/Fault.vue";
 import { getDeviceAlarmList } from "@/api/apiHandler";
+import deviceDetailWarnMixin from "./mixins/deviceDetailWarn.mixin";
+import deviceDetailHistoryMixin from "./mixins/deviceDetailHistory.mixin";
 import { isNumber } from "lodash";
 
 export default {
   name: "modal-device-detail",
   components: { ValueGroupCompact, Modal },
+  mixins: [deviceDetailWarnMixin, deviceDetailHistoryMixin],
   props: {
     faultItem: {
       type: Object,
@@ -182,8 +292,9 @@ export default {
       currentRemarks: "",
       activeTab: "detail",
       enterpriseUuid: "",
+      deviceUuid: "",
       alarmSearch: {
-        total: 20
+        total: 10,
       },
       alarmForm: {
         enterpriseUuid: "",
@@ -220,9 +331,8 @@ export default {
               case "DEVICE_STATUS_BJ":
                 return "报警";
             }
-          }
+          },
         },
-
         {
           prop: "createAt",
           label: "创建时间",
@@ -258,7 +368,7 @@ export default {
           label: "浓度",
           width: 180,
           render(row, value) {
-            return `${value}(${row.densityL} - ${row.densityH})`
+            return `${value}(${row.densityL} - ${row.densityH})`;
           },
         },
         {
@@ -277,9 +387,9 @@ export default {
           width: 180,
           render(row, value) {
             if (isNumber(value)) {
-              return value === 0 ? '正常' : '超限';
+              return value === 0 ? "正常" : "超限";
             }
-          }
+          },
         },
         {
           prop: "entranceGuard",
@@ -287,9 +397,9 @@ export default {
           width: 180,
           render(row, value) {
             if (isNumber(value)) {
-              return value === 0 ? '正常' : '异常';
+              return value === 0 ? "正常" : "异常";
             }
-          }
+          },
         },
       ],
       alarmData: [],
@@ -298,7 +408,13 @@ export default {
   created() {
     this.enterpriseUuid = this.$store.state.user.enterpriseUuid; // 获取请求必备参数
     this.alarmForm.enterpriseUuid = this.enterpriseUuid;
+    this.warnForm.enterpriseUuid = this.enterpriseUuid;
+    this.deviceUuid = this.faultItem.uuid; // 缓存设备 uuid
+    this.warnForm.deviceUuid = this.deviceUuid;
+    this.histForm.deviceUuid = this.deviceUuid;
     this.onSearchAlarm();
+    this.onSearchWarn();
+    this.onSearchHist();
   },
   computed: {},
   methods: {
@@ -315,6 +431,7 @@ export default {
       if (searchTime && searchTime.length > 1) {
         this.alarmForm.startTime = searchTime[0];
         this.alarmForm.endTime = searchTime[1];
+        delete this.alarmForm.searchTime;
       }
 
       const res = await getDeviceAlarmList({
@@ -330,9 +447,17 @@ export default {
 
     pageNumChange(pageNum, type) {
       switch (type) {
-        case 'alarm':
+        case "alarm":
           this.alarmForm.pageNum = pageNum;
           this.onSearchAlarm();
+          break;
+        case "warn":
+          this.warnForm.pageNum = pageNum;
+          this.onSearchWarn();
+          break;
+        case "hist":
+          this.histForm.pageNum = pageNum;
+          this.onSearchHist();
           break;
       }
     },
