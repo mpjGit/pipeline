@@ -108,8 +108,8 @@
             </el-form-item>
             <el-form-item label="报警处理记录">
               <el-select v-model="alarmForm.status" placeholder="活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+                <el-option label="已处理" value="shanghai"></el-option>
+                <el-option label="未处理" value="beijing"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="时间范围">
@@ -134,6 +134,13 @@
               :prop="item.prop"
               :label="item.label"
               :width="item.width"
+              :formatter="(row, column, value) => {
+                if (item.render) {
+                  return item.render(row, value);
+                } else {
+                  return value;
+                }
+              }"
             >
             </el-table-column>
           </el-table>
@@ -158,6 +165,7 @@ import ValueGroupCompact from "@/components/modals/modalComponents/valueGroupCom
 import { mapActions } from "vuex";
 import fault from "@/components/modals/modalComponents/Fault.vue";
 import { getDeviceAlarmList } from "@/api/apiHandler";
+import { isNumber } from "lodash";
 
 export default {
   name: "modal-device-detail",
@@ -197,6 +205,25 @@ export default {
           width: 180,
         },
         {
+          prop: "status",
+          label: "报警状态",
+          width: 180,
+          render(_, value) {
+            if (!value) {
+              return "";
+            }
+            switch (value) {
+              case "DEVICE_STATUS_ZC":
+                return "正常";
+              case "DEVICE_STATUS_GZ":
+                return "故障";
+              case "DEVICE_STATUS_BJ":
+                return "报警";
+            }
+          }
+        },
+
+        {
           prop: "createAt",
           label: "创建时间",
           width: 180,
@@ -204,6 +231,11 @@ export default {
         {
           prop: "updateAt",
           label: "修改时间",
+          width: 180,
+        },
+        {
+          prop: "uploadTime",
+          label: "最后上传时间",
           width: 180,
         },
         {
@@ -220,6 +252,44 @@ export default {
           prop: "battery",
           label: "电池电压值",
           width: 180,
+        },
+        {
+          prop: "density",
+          label: "浓度",
+          width: 180,
+          render(row, value) {
+            return `${value}(${row.densityL} - ${row.densityH})`
+          },
+        },
+        {
+          prop: "temperature",
+          label: "温度",
+          width: 180,
+        },
+        {
+          prop: "intakeMpa",
+          label: "进气压力",
+          width: 180,
+        },
+        {
+          prop: "liquidLevel",
+          label: "液位状态",
+          width: 180,
+          render(row, value) {
+            if (isNumber(value)) {
+              return value === 0 ? '正常' : '超限';
+            }
+          }
+        },
+        {
+          prop: "entranceGuard",
+          label: "门禁状态",
+          width: 180,
+          render(row, value) {
+            if (isNumber(value)) {
+              return value === 0 ? '正常' : '异常';
+            }
+          }
         },
       ],
       alarmData: [],
