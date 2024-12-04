@@ -97,10 +97,10 @@
                     item.temperature
                   }}</el-descriptions-item>
                   <el-descriptions-item label="液位状态">{{
-                    item.liquidLevel === 0 ? "正常" : "超限"
+                    isNumber(item.liquidLevel) ? (item.liquidLevel === 0 ? "正常" : "超限") : ""
                   }}</el-descriptions-item>
                   <el-descriptions-item label="门禁状态">{{
-                    item.entranceGuard === 0 ? "正常" : "异常"
+                    isNumber(item.entranceGuard) ? (item.entranceGuard === 0 ? "正常" : "异常") : ""
                   }}</el-descriptions-item>
                   <el-descriptions-item label="进气压力">{{
                     item.intakeMpa
@@ -231,7 +231,7 @@ import calculateDevices from "@/mixins/monitor/calcMonitorDevices";
 import updateDeviceSignOnMap from "@/mixins/monitor/updateMonitorDeviceSignOnMap"; // 更新地图上的点
 import summaryMixin from "@/mixins/monitor/monitorSummary";
 import summary from "@/components/Summary.vue";
-import { deviceType_toStr, alarmCode2type } from "@/utils/tool";
+import { deviceType_toStr, alarmCode2type, formatDate } from "@/utils/tool";
 import { mapActions } from "vuex";
 import {
   getDeviceJXList,
@@ -241,6 +241,7 @@ import {
   getDeviceInfos,
   getLeftSupportDevice,
 } from "@/api/apiHandler";
+import { isNumber } from "lodash";
 
 export default {
   name: "MapNewComponent.vue",
@@ -405,9 +406,11 @@ export default {
       refreshFaultList: "notification/refreshFaultList",
       refreshMonitorWarnFaultList: "notification/refreshMonitorWarnFaultList",
     }),
+    isNumber(val) {
+      return isNumber(val);
+    },
     solveTime(str) {
-      const date = new Date(str);
-      return date.toLocaleDateString();
+      return formatDate(str);
     },
     solveAlarmCode(code) {
       if (code && code.length) {
