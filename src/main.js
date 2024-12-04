@@ -346,7 +346,7 @@ Vue.mixin({
             return store.state.user.username;
         },
         userId() {
-            return store.state.user.userId;
+            return store.state.user.data.uuid;
         },
         token() {
             return store.state.user.token;

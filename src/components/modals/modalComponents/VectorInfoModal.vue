@@ -11,6 +11,7 @@
       <!-- 报警处理对话框 -->
       <modal-alert
         :faultItem="info"
+        :alarmItem="alarmItem"
         @processConfirm="processConfirm"
         @closeDialog="closeDialog"
         @solveItem="solveItem"
@@ -197,12 +198,17 @@ export default {
       visible: false,
       info: {},
       deviceDetailInfo: {},
+      alarmItem: {},
       type: ModalActionEnum.FAULT,
     };
   },
   watch: {
     info(val) {
-      if (val && val.uuid) {
+      if (this.type === ModalActionEnum.ALERT) {
+        this.alarmItem = this.$store.state.notification.indexSolveAlarm;
+      }
+      // 查询设备详细信息
+      if (val && val.uuid && this.type === ModalActionEnum.DEVICE_DETAIL) {
         fetchDeviceDetail({
           uuid: val.uuid,
         }).then((res) => {
@@ -225,40 +231,21 @@ export default {
       this.visible = false;
       this.$store.commit("notification/setIndexAlarm", null);
     },
-    // 确认处理
+    // 确认处理 (批量处理报警)
     processConfirm(data) {
       if (!data) {
         console.error("传递处理人错误");
         return;
       }
-      const { implementer, type, id } = data;
-      const statusTypeMap = {
-        [ModalActionEnum.FAULT]: "故障",
-        [ModalActionEnum.ALERT]: "报警",
-        [ModalActionEnum.OPEN_FAULT]: "故障",
-        [ModalActionEnum.OPEN_ALERT]: "报警",
-        [ModalActionEnum.HAND_FAULT]: "故障",
-        [ModalActionEnum.HAND_ALERT]: "报警",
-      };
-      const params = {
-        resolveName: implementer,
-        type: this.filterType[0],
-        id,
-        statusType: statusTypeMap[type],
-      };
-      if (statusTypeMap[type] === "报警") {
-        delete data.type;
-        handleJXAlarmAll({
-          uuid: data.uuid,
+      const { uuid } = data;
+      handleJXAlarmAll({
+          deviceUuid: uuid,
         }).then((res) => {
           if (res.code == "200") {
             this.toast("处理成功！");
             EventBus.$emit("refreshPage", {});
           }
         });
-      } else {
-        this.handleAlertWarn(params);
-      }
       this.closeDialog();
     },
     solveItem() {

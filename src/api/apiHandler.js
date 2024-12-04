@@ -53,7 +53,7 @@ export const handleJXAlarm = (params) => {
 
 // 处理当前设备的所有报警（新）
 export const handleJXAlarmAll = (params) => {
-    return post(`/c/corp-device-jx-alarms/update-alarm-record/${params.uuid}`)
+    return post(`/c/corp-device-jx-alarms/update-alarm-records/${params.deviceUuid}`)
 }
 
 // 获取所有设备（地图点位）(新)

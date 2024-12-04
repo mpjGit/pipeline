@@ -97,10 +97,18 @@
                     item.temperature
                   }}</el-descriptions-item>
                   <el-descriptions-item label="液位状态">{{
-                    isNumber(item.liquidLevel) ? (item.liquidLevel === 0 ? "正常" : "超限") : ""
+                    isNumber(item.liquidLevel)
+                      ? item.liquidLevel === 0
+                        ? "正常"
+                        : "超限"
+                      : ""
                   }}</el-descriptions-item>
                   <el-descriptions-item label="门禁状态">{{
-                    isNumber(item.entranceGuard) ? (item.entranceGuard === 0 ? "正常" : "异常") : ""
+                    isNumber(item.entranceGuard)
+                      ? item.entranceGuard === 0
+                        ? "正常"
+                        : "异常"
+                      : ""
                   }}</el-descriptions-item>
                   <el-descriptions-item label="进气压力">{{
                     item.intakeMpa
@@ -414,17 +422,17 @@ export default {
     },
     solveAlarmCode(code) {
       if (code && code.length) {
-        const codeArr = code.split(',');
+        const codeArr = code.split(",");
         const alarmArr = [];
         for (const item of codeArr) {
           const alarmType = alarmCode2type(item);
           if (alarmType) {
-            alarmArr.push(alarmType)
+            alarmArr.push(alarmType);
           }
         }
-        return alarmArr.join(',')
+        return alarmArr.join(",");
       }
-      return ""
+      return "";
     },
     setActiveTab(value) {
       const { paneName } = value;
@@ -557,17 +565,19 @@ export default {
     },
     async solveItem(item) {
       // statusType用于兼容开路设备
-      const { status = "报警", statusType = ERROR } = item;
-      this.$store.commit("notification/setIndexAlarm", item);
-      let resInfo = null;
-      if (status === "报警" || statusType === ERROR) {
-        // 拿到设备详情
-        resInfo = await JXDeviceDetail({ uuid: item.uuid });
-      }
-      if (resInfo.code === 200) {
-        this.$vModal({
-          info: resInfo.data,
-          type: ModalActionEnum.ALERT,
+      const { deviceUuid } = item;
+      if (deviceUuid && deviceUuid.length) {
+        this.$store.commit("notification/setIndexAlarm", item); // 全局缓存当前的报警数据
+        let resInfo = await JXDeviceDetail({ uuid: deviceUuid });
+        if (resInfo.code === 200) {
+          this.$vModal({
+            info: resInfo.data,
+            type: ModalActionEnum.ALERT,
+          });
+        }
+      } else {
+        this.$store.dispatch("toast/showToast", {
+          message: "当前报警信息关联设备不存在，请联系管理员！",
         });
       }
     },
