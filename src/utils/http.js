@@ -1,4 +1,5 @@
 import moment from "moment";
+import qs from "qs";
 import Router from '@/router/index'
 
 const serverUrl = "http://39.107.80.223:8003/"
@@ -34,7 +35,7 @@ export const request = {
 		const reqUrl = regex.test(url) ? serverUrl_new : serverUrl;
 		return fetch(reqUrl + url, {
 			method: 'POST',
-			body: JSON.stringify(params),
+			body: qs.stringify(params),
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			}

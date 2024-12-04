@@ -252,10 +252,9 @@ export default {
       });
       const { code } = res;
       if (code == "200") {
-        this.alarmData = res.data;
-        this.alarmForm.pageSize = res.pageSize;
-        this.alarmForm.pageNum = res.pageNum;
-        this.alarmSearch.total = res.total;
+        this.alarmData = res.data || [];
+        res.total && (this.alarmSearch.total = res.total);
+        res.pageNum && (this.alarmSearch.pageNum = res.pageNum);
       }
     },
 

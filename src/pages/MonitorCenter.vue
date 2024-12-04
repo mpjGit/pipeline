@@ -54,13 +54,13 @@ export default {
     // });
     // 由于默认是井上设备所以需要直接获取除了井上设备的设备
 
-    this.timer = setInterval(() => {
-      this.refreshWarnList();
-      this.refreshFaultList();
-      this.refreshMileageWarnList();
-      this.refreshMileageFaultList();
-      this.refreshMonitorWarnFaultList();
-    }, 4 * 1000);
+    // this.timer = setInterval(() => {
+    //   this.refreshWarnList();
+    //   this.refreshFaultList();
+    //   this.refreshMileageWarnList();
+    //   this.refreshMileageFaultList();
+    //   this.refreshMonitorWarnFaultList();
+    // }, 4 * 1000);
 
     // 暂时不需要按十秒更新一次地图信息（需要搞清楚这几个数据）
     // this.timer1 = setInterval(() => {
