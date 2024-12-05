@@ -289,12 +289,24 @@ const moduleDevice = {
                         let lng = value.lon;
                         const fieldList = [
                             {
-                                name: '状态',
-                                value: '正常'
+                                name: "设备名",
+                                value: value.name || ""
                             },
                             {
-                                name: '电池电压',
-                                value: '220v'
+                                name: "企业名",
+                                value: value.enterpriseName || ''
+                            },
+                            {
+                                name: '信号强度',
+                                value: value.signalStrength || ''
+                            },
+                            {
+                                name: '电池电压值',
+                                value: value.battery || ''
+                            },
+                            {
+                                name: '最后上传时间 ',
+                                value: value.uploadTime || ''
                             },
                             {
                                 name: '上传时间',
@@ -302,24 +314,19 @@ const moduleDevice = {
                             },
                             {
                                 name: '浓度',
-                                value: '32(18 - 45)'
+                                value: value.density ? `${value.density}(${value.densityL} - ${value.densityH})` : ''
                             },
                             {
-                                name: '信号强度',
-                                value: '112'
+                                name: '温度',
+                                value: value.temperature || ''
                             },
                             {
-                                name: '电量',
-                                // value: `${Number(value.power) / 100}V`
-                                value: '未知'
+                                name: '进气压力',
+                                value: value.intakeMpa ? `${value.intakeMpa}(${value.intakeL} - ${value.intakeH})` : '',
                             },
                             {
-                                name: '进气口压强',
-                                value: '124(115 - 150)',
-                            },
-                            {
-                                name: '出气口压强',
-                                value: '331(240 - 320)',
+                                name: '出气压力',
+                                value: value.ventMpa ? `${value.ventMpa}(${value.ventL} - ${value.ventH})` : '',
                             },
 
                         ].filter(Boolean);
@@ -338,7 +345,7 @@ const moduleDevice = {
                         // 装载数据
                         formatDeviceList.push({
                             fault: value.fault,
-                            name: `${value.name}4AMfft098`  || '未知',
+                            name: `${value.name}(${value.code || ''})`  || '未知',
                             fieldList,
                             deviceType: value.distinguish,
                             status: deviceStatus,

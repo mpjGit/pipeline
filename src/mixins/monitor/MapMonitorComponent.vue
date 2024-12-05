@@ -189,10 +189,13 @@
                   处理
                 </el-button>
               </template>
-              <el-descriptions-item label="code" :span="2">{{
-                item.code
+              <el-descriptions-item label="设备编号" :span="2">{{
+                item.deviceUuid
               }}</el-descriptions-item>
-              <el-descriptions-item label="浓度（井下）" :span="2">{{
+              <el-descriptions-item label="设备分类" :span="2">{{
+                deviceType_toStr(item.distinguish)
+              }}</el-descriptions-item>
+              <el-descriptions-item label="浓度" :span="2">{{
                 item.density
               }}</el-descriptions-item>
               <el-descriptions-item label="报警码" :span="2">{{
@@ -430,7 +433,7 @@ export default {
             alarmArr.push(alarmType);
           }
         }
-        return alarmArr.join(",");
+        return alarmArr.join(", ");
       }
       return "";
     },
