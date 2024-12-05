@@ -69,7 +69,6 @@ export default {
     z-index: 11;
     background: white;
     width: 14rem;
-    max-height: 80vh;
     max-width: 80%;
     height: 80vh;
     border-radius: 0.1rem;

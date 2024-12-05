@@ -7,104 +7,47 @@
       </div>
     </template>
     <template v-slot:body>
-      <el-tabs
-        v-model="activeTab"
-        type="border-card"
-        class="lists"
-        @tab-click="setActiveTab"
-      >
+      <el-tabs v-model="activeTab" type="border-card" class="lists" @tab-click="setActiveTab">
         <el-tab-pane label="详细信息" name="detail">
           <div class="grid-value-group">
-            <ValueGroupCompact
-              name="企业名称"
-              :value="faultItem.enterpriseName"
-            />
-            <ValueGroupCompact
-              name="经纬度"
-              :value="`(${Number(faultItem.lat).toFixed(2)},${Number(
-                faultItem.lon
-              ).toFixed(2)})`"
-            />
+            <ValueGroupCompact name="企业名称" :value="faultItem.enterpriseName" />
+            <ValueGroupCompact name="经纬度" :value="`(${Number(faultItem.lat).toFixed(2)},${Number(
+              faultItem.lon
+            ).toFixed(2)})`" />
             <ValueGroupCompact name="创建人" :value="faultItem.createBy" />
             <ValueGroupCompact name="修改人" :value="faultItem.updateBy" />
             <ValueGroupCompact name="IMEI" :value="faultItem.imei" />
             <ValueGroupCompact name="ICCID" :value="faultItem.iccid" />
             <ValueGroupCompact name="SINR" :value="faultItem.sinr" />
             <ValueGroupCompact name="RSRP" :value="faultItem.rsrp" />
-            <ValueGroupCompact
-              name="浓度"
-              :value="`${faultItem.density}(${faultItem.densityL} ~ ${faultItem.densityH})`"
-            />
-            <ValueGroupCompact
-              name="信号强度"
-              :value="faultItem.signalStrength"
-            />
+            <ValueGroupCompact name="浓度"
+              :value="`${faultItem.density}(${faultItem.densityL} ~ ${faultItem.densityH})`" />
+            <ValueGroupCompact name="信号强度" :value="faultItem.signalStrength" />
             <ValueGroupCompact name="池电压值" :value="faultItem.battery" />
-            <ValueGroupCompact
-              name="最后上传时间"
-              :value="faultItem.uploadTime"
-            />
+            <ValueGroupCompact name="最后上传时间" :value="faultItem.uploadTime" />
             <ValueGroupCompact name="电池电压" :value="faultItem.battery" />
-            <ValueGroupCompact
-              name="温度"
-              :value="`${faultItem.temperature}℃`"
-            />
-            <ValueGroupCompact
-              name="进气压力"
-              :value="`${faultItem.intakeMpa}(${faultItem.intakeL} ~ ${faultItem.intakeH})`"
-            />
-            <ValueGroupCompact
-              name="出气压力"
-              :value="`${faultItem.ventMpa}(${faultItem.ventL} ~ ${faultItem.ventH})`"
-            />
-            <ValueGroupCompact
-              name="采集周期（单位：分钟）"
-              :value="faultItem.collectCycle"
-            />
-            <ValueGroupCompact
-              name="上传周期（单位：分钟）"
-              :value="faultItem.uploadCycle"
-            />
+            <ValueGroupCompact name="温度" :value="`${faultItem.temperature}℃`" />
+            <ValueGroupCompact name="进气压力"
+              :value="`${faultItem.intakeMpa}(${faultItem.intakeL} ~ ${faultItem.intakeH})`" />
+            <ValueGroupCompact name="出气压力" :value="`${faultItem.ventMpa}(${faultItem.ventL} ~ ${faultItem.ventH})`" />
+            <ValueGroupCompact name="采集周期（单位：分钟）" :value="faultItem.collectCycle" />
+            <ValueGroupCompact name="上传周期（单位：分钟）" :value="faultItem.uploadCycle" />
             <ValueGroupCompact name="报警码" :value="solveAlarmCode(faultItem.alarmCode)" />
-            <ValueGroupCompact
-              name="是否发送历史记录"
-              :value="faultItem.historyRecord == '0' ? '否' : '是'"
-            />
-            <ValueGroupCompact
-              name="液位状态"
-              :value="`${faultItem.liquidLevel === 1 ? '超限' : '正常'}`"
-            />
-            <ValueGroupCompact
-              name="门禁状态"
-              :value="`${faultItem.entranceGuard === 1 ? '异常' : '正常'}`"
-            />
-            <ValueGroupCompact
-              v-if="isCarPage"
-              name="车速"
-              :value="faultItem.nospeed"
-            />
+            <ValueGroupCompact name="是否发送历史记录" :value="faultItem.historyRecord == '0' ? '否' : '是'" />
+            <ValueGroupCompact name="液位状态" :value="`${faultItem.liquidLevel === 1 ? '超限' : '正常'}`" />
+            <ValueGroupCompact name="门禁状态" :value="`${faultItem.entranceGuard === 1 ? '异常' : '正常'}`" />
+            <ValueGroupCompact v-if="isCarPage" name="车速" :value="faultItem.nospeed" />
             <!-- <ValueGroupCompact name="设备名称" :value="faultItem.deviceName"/> -->
             <ValueGroupCompact name="备注" :value="faultItem.remarks" />
-            <ValueGroupCompact
-              class="area-start-time"
-              name="创建时间"
-              :value="faultItem.createAt"
-            />
-            <ValueGroupCompact
-              class="area-end-time"
-              name="修改时间"
-              :value="faultItem.updateAt"
-            />
+            <ValueGroupCompact class="area-start-time" name="创建时间" :value="faultItem.createAt" />
+            <ValueGroupCompact class="area-end-time" name="修改时间" :value="faultItem.updateAt" />
           </div>
         </el-tab-pane>
         <el-tab-pane label="报警记录" name="alarm">
           <!-- 查询区域 -->
           <el-form :inline="true" :model="alarmForm" class="demo-form-inline">
             <el-form-item label="关键字">
-              <el-input
-                v-model="alarmForm.keyword"
-                placeholder="关键字（模糊查询）"
-              ></el-input>
+              <el-input v-model="alarmForm.keyword" placeholder="关键字（模糊查询）"></el-input>
             </el-form-item>
             <el-form-item label="报警处理记录">
               <el-select v-model="alarmForm.status" placeholder="活动区域">
@@ -113,13 +56,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="时间范围">
-              <el-date-picker
-                v-model="alarmForm.searchTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
+              <el-date-picker v-model="alarmForm.searchTime" type="daterange" range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -127,50 +65,33 @@
             </el-form-item>
           </el-form>
           <!-- 数据展示区域 -->
-          <el-table :data="alarmData" style="width: 100%">
-            <el-table-column
-              v-for="(item, index) in alarmTableCol"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="
-                (row, column, value) => {
-                  if (item.render) {
-                    return item.render(row, value);
-                  } else {
-                    return value;
+          <div class="table-content">
+            <el-table :data="alarmData" style="width: 100%;">
+              <el-table-column v-for="(item, index) in alarmTableCol" :key="index" :prop="item.prop" :label="item.label"
+                :width="item.width" :formatter="(row, column, value) => {
+                    if (item.render) {
+                      return item.render(row, value);
+                    } else {
+                      return value;
+                    }
                   }
-                }
-              "
-            >
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :total="alarmSearch.total"
-            @current-change="pageNumChange($event, 'alarm')"
-          >
-          </el-pagination>
+                  ">
+              </el-table-column>
+            </el-table>
+            <el-pagination background layout="prev, pager, next" :total="alarmSearch.total"
+              @current-change="pageNumChange($event, 'alarm')">
+            </el-pagination>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="警告记录" name="fault">
           <!-- 查询区域 -->
           <el-form :inline="true" :model="warnForm" class="demo-form-inline">
             <el-form-item label="关键字">
-              <el-input
-                v-model="warnForm.keyword"
-                placeholder="关键字（模糊查询）"
-              ></el-input>
+              <el-input v-model="warnForm.keyword" placeholder="关键字（模糊查询）"></el-input>
             </el-form-item>
             <el-form-item label="时间范围">
-              <el-date-picker
-                v-model="warnForm.searchTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
+              <el-date-picker v-model="warnForm.searchTime" type="daterange" range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -179,49 +100,30 @@
           </el-form>
           <!-- 数据展示区域 -->
           <el-table :data="warnData" style="width: 100%">
-            <el-table-column
-              v-for="(item, index) in warnCol"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="
-                (row, column, value) => {
+            <el-table-column v-for="(item, index) in warnCol" :key="index" :prop="item.prop" :label="item.label"
+              :width="item.width" :formatter="(row, column, value) => {
                   if (item.render) {
                     return item.render(row, value);
                   } else {
                     return value;
                   }
                 }
-              "
-            >
+                ">
             </el-table-column>
           </el-table>
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :total="warnSearch.total"
-            @current-change="pageNumChange($event, 'warn')"
-          >
+          <el-pagination background layout="prev, pager, next" :total="warnSearch.total"
+            @current-change="pageNumChange($event, 'warn')">
           </el-pagination>
         </el-tab-pane>
         <el-tab-pane label="历史记录" name="hist">
           <!-- 查询区域 -->
           <el-form :inline="true" :model="histForm" class="demo-form-inline">
             <el-form-item label="关键字">
-              <el-input
-                v-model="histForm.keyword"
-                placeholder="关键字（模糊查询）"
-              ></el-input>
+              <el-input v-model="histForm.keyword" placeholder="关键字（模糊查询）"></el-input>
             </el-form-item>
             <el-form-item label="时间范围">
-              <el-date-picker
-                v-model="histForm.searchTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
+              <el-date-picker v-model="histForm.searchTime" type="daterange" range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -230,30 +132,19 @@
           </el-form>
           <!-- 数据展示区域 -->
           <el-table :data="histData" style="width: 100%">
-            <el-table-column
-              v-for="(item, index) in histCol"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="
-                (row, column, value) => {
+            <el-table-column v-for="(item, index) in histCol" :key="index" :prop="item.prop" :label="item.label"
+              :width="item.width" :formatter="(row, column, value) => {
                   if (item.render) {
                     return item.render(row, value);
                   } else {
                     return value;
                   }
                 }
-              "
-            >
+                ">
             </el-table-column>
           </el-table>
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :total="histSearch.total"
-            @current-change="pageNumChange($event, 'hist')"
-          >
+          <el-pagination background layout="prev, pager, next" :total="histSearch.total"
+            @current-change="pageNumChange($event, 'hist')">
           </el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -284,7 +175,7 @@ export default {
   props: {
     faultItem: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   data: function () {
@@ -513,6 +404,7 @@ export default {
 .area-start-time {
   grid-area: e;
 }
+
 .area-end-time {
   grid-area: d;
 }
@@ -520,6 +412,10 @@ export default {
 .grid-value-group {
   width: 100%;
   height: 30vh;
+}
+
+.lists {
+  height: auto;
 }
 
 .record-container {
