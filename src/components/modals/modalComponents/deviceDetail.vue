@@ -65,7 +65,7 @@
               name="上传周期（单位：分钟）"
               :value="faultItem.uploadCycle"
             />
-            <ValueGroupCompact name="报警码" :value="faultItem.alarmCode" />
+            <ValueGroupCompact name="报警码" :value="solveAlarmCode(faultItem.alarmCode)" />
             <ValueGroupCompact
               name="是否发送历史记录"
               :value="faultItem.historyRecord == '0' ? '否' : '是'"
@@ -274,6 +274,7 @@ import fault from "@/components/modals/modalComponents/Fault.vue";
 import { getDeviceAlarmList } from "@/api/apiHandler";
 import deviceDetailWarnMixin from "./mixins/deviceDetailWarn.mixin";
 import deviceDetailHistoryMixin from "./mixins/deviceDetailHistory.mixin";
+import { alarmCode2type } from "@/utils/tool";
 import { isNumber } from "lodash";
 
 export default {
@@ -462,6 +463,21 @@ export default {
       }
     },
 
+    solveAlarmCode(code) {
+      if (code && code.length) {
+        const codeArr = code.split(",");
+        const alarmArr = [];
+        for (const item of codeArr) {
+          const alarmType = alarmCode2type(item);
+          if (alarmType) {
+            alarmArr.push(alarmType);
+          }
+        }
+        return alarmArr.join(",");
+      }
+      return "";
+    },
+
     onImplementerChange: function ({ value }) {
       this.selectImplementer = value;
     },
@@ -499,6 +515,11 @@ export default {
 }
 .area-end-time {
   grid-area: d;
+}
+
+.grid-value-group {
+  width: 100%;
+  height: 30vh;
 }
 
 .record-container {

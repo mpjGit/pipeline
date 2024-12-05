@@ -68,10 +68,10 @@ export default {
   .modal {
     z-index: 11;
     background: white;
-    width: 10rem;
+    width: 14rem;
     max-height: 80vh;
     max-width: 80%;
-    height: auto;
+    height: 80vh;
     border-radius: 0.1rem;
     display: flex;
     flex-direction: column;
