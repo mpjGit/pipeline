@@ -138,7 +138,7 @@ export default {
       Promise.all([
         this.$store.dispatch("updateDeviceStatus"),
         this.$store.dispatch("updateNewDeviceStatus"),
-        this.$store.dispatch("updateMileageDeviceStatus"),
+        // this.$store.dispatch("updateMileageDeviceStatus"),
       ])
         .then(() => {
           let deviceList = [

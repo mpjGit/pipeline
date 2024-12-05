@@ -136,7 +136,7 @@ export default {
       immediate: true,
       handler: function() {
           window.token = this.$store.state.user.token;
-        this.$store.dispatch('configs/getCurrentUnit')
+        // this.$store.dispatch('configs/getCurrentUnit')
       }
     },
     watch: {

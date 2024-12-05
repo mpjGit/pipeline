@@ -215,53 +215,53 @@ const moduleNotification = {
             }
         },
         // 监控中心处理除井下设备外的所有列表
-        async refreshMonitorWarnFaultList({commit, rootState}) {
-            const req = {
-                id: rootState.user.userId,
-            };
-            const {
-                success,
-                detail,
-                chezainum,
-                kailunum,
-                shouchinum,
-            } = await getAlertListAll(req);
-            if (!success) {
-                console.error('报警数据请求失败');
-                return [];
-            }
-            const warnList = [];
-            const faultList = [];
-            commit('setMonitorAllNum', {
-                chezainum,
-                kailunum,
-                shouchinum,
-            });
-            detail.czlistandsclist.forEach((item) => {
-                if (item.status === '报警') {
-                    item.statusType = 'error';
-                    warnList.push(item);
-                    return;
-                }
-                item.statusType = 'warn';
-                faultList.push(item);
-            });
-            detail.bjlsit.forEach((item) => {
-                item.statusType = 'error';
-                item.userName = item.username;
-                item.deviceName = item.devicename;
-                item.type = PageTypeEnum.OPEN;
-                warnList.push(item);
-            });
-            detail.gzlsit.forEach((item) => {
-                item.statusType = 'warn';
-                item.userName = item.username;
-                item.deviceName = item.devicename;
-                item.type = PageTypeEnum.OPEN;
-                faultList.push(item);
-            })
-            commit('setMonitorFaultList', [...faultList])
-            commit('setMonitorWarnList', [...warnList])
+        async refreshMonitorWarnFaultList() {
+            // const req = {
+            //     id: rootState.user.userId,
+            // };
+            // const {
+            //     success,
+            //     detail,
+            //     chezainum,
+            //     kailunum,
+            //     shouchinum,
+            // } = await getAlertListAll(req);
+            // if (!success) {
+            //     console.error('报警数据请求失败');
+            //     return [];
+            // }
+            // const warnList = [];
+            // const faultList = [];
+            // commit('setMonitorAllNum', {
+            //     chezainum,
+            //     kailunum,
+            //     shouchinum,
+            // });
+            // detail.czlistandsclist.forEach((item) => {
+            //     if (item.status === '报警') {
+            //         item.statusType = 'error';
+            //         warnList.push(item);
+            //         return;
+            //     }
+            //     item.statusType = 'warn';
+            //     faultList.push(item);
+            // });
+            // detail.bjlsit.forEach((item) => {
+            //     item.statusType = 'error';
+            //     item.userName = item.username;
+            //     item.deviceName = item.devicename;
+            //     item.type = PageTypeEnum.OPEN;
+            //     warnList.push(item);
+            // });
+            // detail.gzlsit.forEach((item) => {
+            //     item.statusType = 'warn';
+            //     item.userName = item.username;
+            //     item.deviceName = item.devicename;
+            //     item.type = PageTypeEnum.OPEN;
+            //     faultList.push(item);
+            // })
+            // commit('setMonitorFaultList', [...faultList])
+            // commit('setMonitorWarnList', [...warnList])
         },
         async initNotificationData({ commit }) {
             commit('setMonitorFaultList', []);
@@ -270,103 +270,103 @@ const moduleNotification = {
             commit('setMonitorDownHoleFaultList', []);
         },
         // 新接口刷新全部的故障和报警数据
-        async refreshNewWarnFaultList({commit, rootState}) {
-            const [deviceType] = rootState.device.filterType;
-            const req = {
-                id: rootState.user.userId,
-                resolve: 0,
-                types: pageTypeMap[deviceType],
-            };
-            const {success, detail} = await getAlertListByType(req);
-            if (!success) {
-                console.error('报警数据请求失败');
-                return [];
-            }
-            const warnList = [];
-            const faultList = [];
-            if ([PageTypeEnum.HAND, PageTypeEnum.INVEHICLE].includes(deviceType)) {
-                detail.czlistandsclist.forEach((item) => {
-                    if (item.status === '报警') {
-                        item.statusType = 'error';
-                        warnList.push(item);
-                        return;
-                    }
-                    item.statusType = 'warn';
-                    faultList.push(item);
-                });
-            } else {
-                detail.bjlsit.forEach((item) => {
-                    item.statusType = 'error';
-                    item.userName = item.username;
-                    item.deviceName = item.devicename;
-                    item.type = PageTypeEnum.OPEN;
-                    warnList.push(item);
-                });
-                detail.gzlsit.forEach((item) => {
-                    item.statusType = 'warn';
-                    item.userName = item.username;
-                    item.deviceName = item.devicename;
-                    item.type = PageTypeEnum.OPEN;
-                    faultList.push(item);
-                })
-            }
-            commit('setMonitorFaultList', [...faultList])
-            commit('setMonitorWarnList', [...warnList])
+        async refreshNewWarnFaultList() {
+            // const [deviceType] = rootState.device.filterType;
+            // const req = {
+            //     id: rootState.user.userId,
+            //     resolve: 0,
+            //     types: pageTypeMap[deviceType],
+            // };
+            // const {success, detail} = await getAlertListByType(req);
+            // if (!success) {
+            //     console.error('报警数据请求失败');
+            //     return [];
+            // }
+            // const warnList = [];
+            // const faultList = [];
+            // if ([PageTypeEnum.HAND, PageTypeEnum.INVEHICLE].includes(deviceType)) {
+            //     detail.czlistandsclist.forEach((item) => {
+            //         if (item.status === '报警') {
+            //             item.statusType = 'error';
+            //             warnList.push(item);
+            //             return;
+            //         }
+            //         item.statusType = 'warn';
+            //         faultList.push(item);
+            //     });
+            // } else {
+            //     detail.bjlsit.forEach((item) => {
+            //         item.statusType = 'error';
+            //         item.userName = item.username;
+            //         item.deviceName = item.devicename;
+            //         item.type = PageTypeEnum.OPEN;
+            //         warnList.push(item);
+            //     });
+            //     detail.gzlsit.forEach((item) => {
+            //         item.statusType = 'warn';
+            //         item.userName = item.username;
+            //         item.deviceName = item.devicename;
+            //         item.type = PageTypeEnum.OPEN;
+            //         faultList.push(item);
+            //     })
+            // }
+            // commit('setMonitorFaultList', [...faultList])
+            // commit('setMonitorWarnList', [...warnList])
             // commit('updateFaultList', [...faultList])
             // commit('updateWarnList', [...warnList])
         },
 
-        refreshWarnList: function (context) {
-            const page = context.rootState.device.filterType[0]; // 页面类型
-            const req = {};
-            if (page === PageTypeEnum.MILEAGE) {
-                req.deviceType = 'mileage';
-            }
-            request.post('allwarn', {username: context.rootState.user.username , ...req}).then(res => {
-                // context.commit('updateWarnList', [...res])
-                // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
-                context.commit('setMonitorDownHoleWarnList', [...res])
-                // }
-            });
+        refreshWarnList: function () {
+            // const page = context.rootState.device.filterType[0]; // 页面类型
+            // const req = {};
+            // if (page === PageTypeEnum.MILEAGE) {
+            //     req.deviceType = 'mileage';
+            // }
+            // request.post('allwarn', {username: context.rootState.user.username , ...req}).then(res => {
+            //     // context.commit('updateWarnList', [...res])
+            //     // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
+            //     context.commit('setMonitorDownHoleWarnList', [...res])
+            //     // }
+            // });
         },
 
-        refreshFaultList: function (context) {
-            const page = context.rootState.device.filterType[0];
-            const req = {};
-            if (page === PageTypeEnum.MILEAGE) {
-                req.deviceType = 'mileage';
-            }
-            request.post('allfault', {username: context.rootState.user.username , ...req}).then(res => {
-                // context.commit('updateFaultList', [...res])
-                // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
-                context.commit('setMonitorDownHoleFaultList', [...res])
-                // }
-            });
+        refreshFaultList: function () {
+            // const page = context.rootState.device.filterType[0];
+            // const req = {};
+            // if (page === PageTypeEnum.MILEAGE) {
+            //     req.deviceType = 'mileage';
+            // }
+            // request.post('allfault', {username: context.rootState.user.username , ...req}).then(res => {
+            //     // context.commit('updateFaultList', [...res])
+            //     // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
+            //     context.commit('setMonitorDownHoleFaultList', [...res])
+            //     // }
+            // });
         },
 
 
-        refreshMileageWarnList: function (context) {
-            const page = context.rootState.device.filterType[0];
-            const req = {};
-            req.deviceType = 'mileage';
-            request.post('allwarn', {username: context.rootState.user.username , ...req}).then(res => {
-                // context.commit('updateWarnList', [...res])
-                // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
-                context.commit('setMonitorMileageWarnList', [...res])
-                // }
-            });
+        refreshMileageWarnList: function () {
+            // const page = context.rootState.device.filterType[0];
+            // const req = {};
+            // req.deviceType = 'mileage';
+            // request.post('allwarn', {username: context.rootState.user.username , ...req}).then(res => {
+            //     // context.commit('updateWarnList', [...res])
+            //     // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
+            //     context.commit('setMonitorMileageWarnList', [...res])
+            //     // }
+            // });
         },
 
-        refreshMileageFaultList: function (context) {
-            const page = context.rootState.device.filterType[0];
-            const req = {};
-            req.deviceType = 'mileage';
-            request.post('allfault', {username: context.rootState.user.username , ...req}).then(res => {
-                // context.commit('updateFaultList', [...res])k
-                // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
-                context.commit('setMonitorMileageFaultList', [...res])
-                // }
-            });
+        refreshMileageFaultList: function () {
+            // const page = context.rootState.device.filterType[0];
+            // const req = {};
+            // req.deviceType = 'mileage';
+            // request.post('allfault', {username: context.rootState.user.username , ...req}).then(res => {
+            //     // context.commit('updateFaultList', [...res])k
+            //     // if (context.rootState.device.filterType[0] === PageTypeEnum.MONITOR) {
+            //     context.commit('setMonitorMileageFaultList', [...res])
+            //     // }
+            // });
         },
 
         clearAllWarnFault({commit}) {

@@ -37,7 +37,7 @@ export default {
     this.refreshMileageFaultList();
     this.refreshMonitorWarnFaultList();
     this.$store.dispatch('updateDeviceStatus');
-    this.$store.dispatch('updateMileageDeviceStatus');
+    // this.$store.dispatch('updateMileageDeviceStatus');
     this.$store.dispatch('updateNewDeviceStatus');
   },
 
