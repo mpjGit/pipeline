@@ -36,7 +36,8 @@ export default {
     // 跳转管理平台
     toManage() {
       // console.log(window.location.origin + '/#/manage')
-      window.open(window.location.origin + '/#/manage', '_blank')
+      window.open(window.location.origin + '/#/manage', '_blank');// 本地开发
+      // window.open(window.location.origin + '/sense/#/manage', '_blank');// 线上环境
       // this.$router.push('/manage');
     },
     // 是否有权限展示路由

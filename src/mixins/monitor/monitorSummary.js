@@ -25,8 +25,8 @@ let summaryMixin = {
           _summaryList.push({
             title: mapKey,
             total,
-            warn_count: summaryItem.deviceJxNormal,
-            error_count: summaryItem.deviceJxFault,
+            warn_count: summaryItem.deviceJxFault, // 故障
+            error_count: summaryItem.deviceJxAlarm, // 报警
             normal_count: summaryItem.deviceJxNormal,
             deviceBattery: summaryItem.deviceBattery,
             deviceSignal: summaryItem.deviceSignal,
