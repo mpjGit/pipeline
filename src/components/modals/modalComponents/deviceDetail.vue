@@ -56,7 +56,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="时间范围">
-              <el-date-picker v-model="alarmForm.searchTime" type="daterange" range-separator="至"
+              <el-date-picker v-model="alarmForm.searchTime" type="datetimerange" value-format="yyyy-MM-dd HH:MM:SS" range-separator="至"
                 start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
@@ -90,7 +90,7 @@
               <el-input v-model="warnForm.keyword" placeholder="关键字（模糊查询）"></el-input>
             </el-form-item>
             <el-form-item label="时间范围">
-              <el-date-picker v-model="warnForm.searchTime" type="daterange" range-separator="至"
+              <el-date-picker v-model="warnForm.searchTime" type="datetimerange" value-format="yyyy-MM-dd HH:MM:SS" range-separator="至"
                 start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
@@ -122,7 +122,7 @@
               <el-input v-model="histForm.keyword" placeholder="关键字（模糊查询）"></el-input>
             </el-form-item>
             <el-form-item label="时间范围">
-              <el-date-picker v-model="histForm.searchTime" type="daterange" range-separator="至"
+              <el-date-picker v-model="histForm.searchTime" type="datetimerange" value-format="yyyy-MM-dd HH:MM:SS" range-separator="至"
                 start-placeholder="开始日期" end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
