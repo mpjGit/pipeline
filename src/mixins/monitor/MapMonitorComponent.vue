@@ -47,10 +47,11 @@
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="formData.rangeTime"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            value-format="yyyy-MM-dd HH:MM:SS"
           >
           </el-date-picker>
         </el-form-item>
@@ -508,6 +509,7 @@ export default {
       this.searchLoading = true;
       this.formData.pageNum = 1;
       if (this.formData.rangeTime && this.formData.rangeTime.length > 1) {
+        console.log(this.formData.rangeTime[0])
         this.formData.startTime = this.formData.rangeTime[0];
         this.formData.endTime = this.formData.rangeTime[1];
         delete this.formData.rangeTime;
@@ -813,7 +815,7 @@ export default {
 
 .search-list {
   z-index: 9;
-  width: 4.2rem;
+  width: 4.8rem;
   height: 64vh;
   color: white;
   background: #222a3644;
