@@ -102,9 +102,7 @@ export default {
   methods: {
     // 初始化路由基本信息
     initRouterBaseInfo() {
-      if (RoutesConstant[0].version !== this.$store.state.user.routes[0].version) {
-        this.$store.commit('setUserRoutes', RoutesConstant);
-      }
+      this.$store.commit('setUserRoutes', RoutesConstant);
     },
     hideAlert() {
       this.$store.dispatch('hideAlert');

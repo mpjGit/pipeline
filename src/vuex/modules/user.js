@@ -1,7 +1,6 @@
 // import CryptoJS from 'crypto';
-import {request} from "@/utils/http";
-import {getLeftSupportDevice, getUserIdByName, loginUser} from "@/api/apiHandler";
-import RoutesConstant, {typeMap} from "@/vuex/constant/RoutesConstant";
+import {getLeftSupportDevice, loginUser} from "@/api/apiHandler";
+import RoutesConstant from "@/vuex/constant/RoutesConstant";
 import VectorInfoModal from "@/components/modals/modalComponents/VectorInfoModal";
 import EventBus from "@/utils/eventBus";
 import { deviceType_toStr } from "@/utils/tool";
@@ -61,7 +60,8 @@ const moduleUser = {
                     path: '/deviceall',
                     sort: 2,
                     uuid: '',
-                    name: '监控中心'
+                    name: '监控中心',
+                    en: 'Monitoring Center',
                 }
             ];
             const { code, data } = await getLeftSupportDevice({ enterpriseUuid: enterpriseUuid });
@@ -73,10 +73,16 @@ const moduleUser = {
             // 设置对应的路由path
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
-                    data[i].path = routes[i + 1].path;
-                    data[i].en = routes[i+1].en;
-                    data[i].name = deviceType_toStr(data[i].distinguish);
-                    routeData.push(data[i]);
+                    const dataItem = data[i];
+                    for (const route of routes) {
+                        if (route.type === dataItem.distinguish) {
+                            dataItem.path = route.path;
+                            dataItem.en = route.en;
+                            dataItem.name = deviceType_toStr(dataItem.distinguish);
+                            routeData.push(dataItem);
+                            break;
+                        }
+                    }
                 }
             }
             

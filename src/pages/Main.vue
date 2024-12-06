@@ -22,7 +22,7 @@
                 ? "监控中心"
                 : deviceType_toStr(item.distinguish)
             }}</span>
-            <span class="en">{{ item.createAt }}</span>
+            <span class="en">{{ item.en }}</span>
           </div>
         </div>
       </div>
