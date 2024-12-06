@@ -307,6 +307,9 @@ export default {
   },
   mounted: async function () {
     window.addEventListener("scroll", this.handleScroll, true);
+    this.$bus.$on('refreshAlarm', () => {
+      this.getDevAlarmList()
+    });
   },
   watch: {
     "$route.query.type": {
@@ -1013,7 +1016,7 @@ export default {
       padding-left: 8px;
       .item-card {
         width: 4rem;
-        height: 2rem;
+        height: 2.4rem;
       }
     }
   }

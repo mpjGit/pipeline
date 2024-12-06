@@ -43,7 +43,7 @@ export const setVoiceStatus = (params) => {
 
 // 井下设备详情（新）
 export const JXDeviceDetail = (params) => {
-    return post(`/c/corp-device-jxs/update-record/${params.uuid}`)
+    return get(`/q/corp-device-jxs/find-by-uuid/${params.uuid}`)
 }
 
 // 处理设备报警（新）

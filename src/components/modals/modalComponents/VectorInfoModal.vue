@@ -244,6 +244,7 @@ export default {
           if (res.code == "200") {
             this.toast("处理成功！");
             EventBus.$emit("refreshPage", {});
+            EventBus.$emit("refreshAlarm", {});
           }
         });
       this.closeDialog();
@@ -257,6 +258,7 @@ export default {
           if (res.code == "200") {
             this.toast("处理成功！");
             EventBus.$emit("refreshPage", {});
+            EventBus.$emit("refreshAlarm", {});
           }
         });
       }
