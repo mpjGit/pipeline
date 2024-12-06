@@ -146,6 +146,8 @@ export default {
       if (this.alarmItem.count > 1) {
         this.showModal({
           message: "是否批量处理该设备下的数据?",
+          confirmMsg: '全部处理',
+          cancelMsg: '处理此条',
           onConfirm: () => {
             this.$emit("processConfirm", {
               ...this.faultItem,

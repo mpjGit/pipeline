@@ -21,10 +21,10 @@
       <template v-slot:footer>
         <div class="button-wrap">
           <div class="button" v-on:click="onCancel">
-            <span>取消</span>
+            <span>{{ cancelMsg }}</span>
           </div>
           <div class="button prefer" v-on:click="onConfirm">
-            <span>确定</span>
+            <span>{{ confirmMsg }}</span>
           </div>
         </div>
       </template>
@@ -59,6 +59,12 @@ name: "ConfirmModal",
     },
     onCancel: function () {
       return this.$store.state.confirm.onCancel
+    },
+    confirmMsg: function() {
+      return this.$store.state.confirm.confirmMsg
+    },
+    cancelMsg: function() {
+      return this.$store.state.confirm.cancelMsg
     }
   }
 }
